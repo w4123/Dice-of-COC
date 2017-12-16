@@ -12,22 +12,22 @@
 #include "stdafx.h"
 #include "string"
 #include "cqp.h"
-#include "appmain.h" //Ó¦ÓÃAppIDµÈÐÅÏ¢£¬ÇëÕýÈ·ÌîÐ´£¬·ñÔò¿áQ¿ÉÄÜÎÞ·¨¼ÓÔØ
+#include "appmain.h" //åº”ç”¨AppIDç­‰ä¿¡æ¯ï¼Œè¯·æ­£ç¡®å¡«å†™ï¼Œå¦åˆ™é…·Qå¯èƒ½æ— æ³•åŠ è½½
 
 using namespace std;
 
-int ac = -1; //AuthCode µ÷ÓÃ¿áQµÄ·½·¨Ê±ÐèÒªÓÃµ½
+int ac = -1; //AuthCode è°ƒç”¨é…·Qçš„æ–¹æ³•æ—¶éœ€è¦ç”¨åˆ°
 static string FILENAME;
 
 /* 
-* ·µ»ØÓ¦ÓÃµÄApiVer¡¢Appid£¬´ò°üºó½«²»»áµ÷ÓÃ
+* è¿”å›žåº”ç”¨çš„ApiVerã€Appidï¼Œæ‰“åŒ…åŽå°†ä¸ä¼šè°ƒç”¨
 */
 CQEVENT(const char*, AppInfo, 0)() {
 	return CQAPPINFO;
 }
 /* 
-* ½ÓÊÕ Ó¦ÓÃAuthCode£¬¿áQ¶ÁÈ¡Ó¦ÓÃÐÅÏ¢ºó£¬Èç¹û½ÓÊÜ¸ÃÓ¦ÓÃ£¬½«»áµ÷ÓÃÕâ¸öº¯Êý²¢´«µÝAuthCode¡£
-* ²»ÒªÔÚ±¾º¯Êý´¦ÀíÆäËûÈÎºÎ´úÂë£¬ÒÔÃâ·¢ÉúÒì³£Çé¿ö¡£ÈçÐèÖ´ÐÐ³õÊ¼»¯´úÂëÇëÔÚStartupÊÂ¼þÖÐÖ´ÐÐ£¨Type=1001£©¡£
+* æŽ¥æ”¶ åº”ç”¨AuthCodeï¼Œé…·Qè¯»å–åº”ç”¨ä¿¡æ¯åŽï¼Œå¦‚æžœæŽ¥å—è¯¥åº”ç”¨ï¼Œå°†ä¼šè°ƒç”¨è¿™ä¸ªå‡½æ•°å¹¶ä¼ é€’AuthCodeã€‚
+* ä¸è¦åœ¨æœ¬å‡½æ•°å¤„ç†å…¶ä»–ä»»ä½•ä»£ç ï¼Œä»¥å…å‘ç”Ÿå¼‚å¸¸æƒ…å†µã€‚å¦‚éœ€æ‰§è¡Œåˆå§‹åŒ–ä»£ç è¯·åœ¨Startupäº‹ä»¶ä¸­æ‰§è¡Œï¼ˆType=1001ï¼‰ã€‚
 */
 CQEVENT(int32_t, Initialize, 4)(int32_t AuthCode) {
 	ac = AuthCode;
@@ -40,7 +40,7 @@ CQEVENT(int32_t, __eventEnable, 0)() {
 	fstream i(FILENAME.c_str());
 	if (!i) {
 		i.open(FILENAME.c_str(), ios::in);
-		i<<"[ÈËÎï×÷³É]\nDiceCount="
+		i<<"[äººç‰©ä½œæˆ]\nDiceCount="
 	}*/
 
 	return 0;
@@ -126,83 +126,83 @@ int RollDice(string Dice,string &strAns) {
 	}
 }
 CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t sendTime, int64_t fromGroup, int64_t fromQQ, const char *fromAnonymous, const char *msg, int32_t font) {
-	if (msg[0] == '.'&&msg[1] == 'r'&&msg[2] == 'd') {
+	if (msg[0] == '.'&&msg[1] == 'o') {
 		string strSecondInput;
-		int intCustomMsg = 3;
+		int intCustomMsg = 2;
 		while (msg[intCustomMsg] == ' ')intCustomMsg++;
 		while (msg[intCustomMsg] != ' '&&msg[intCustomMsg] != '\0') {
 			strSecondInput += msg[intCustomMsg];
 			intCustomMsg++;
 		}
-		if (strSecondInput == "ÈËÎï×÷³É") {
+		if (strSecondInput == "äººç‰©ä½œæˆ") {
 			string strMAns = num2str(fromQQ);
 			string strNoUse;
-			strMAns += "µÄÈËÎï×÷³É: ";
+			strMAns += "çš„äººç‰©ä½œæˆ: ";
 			strMAns += '\n';
-			strMAns += "Á¦Á¿STR=3D6*5=";
+			strMAns += "åŠ›é‡STR=3D6*5=";
 			strMAns += num2str(RollDice("3D6",strNoUse) * 5);
 			strMAns += '\n';
-			strMAns += "ÌåÖÊCON=3D6*5=";
+			strMAns += "ä½“è´¨CON=3D6*5=";
 			strMAns += num2str(RollDice("3D6", strNoUse) * 5);
 			strMAns += '\n';
-			strMAns += "ÌåÐÍSIZ=3D6*5=";
+			strMAns += "ä½“åž‹SIZ=3D6*5=";
 			strMAns += num2str(RollDice("3D6", strNoUse) * 5);
 			strMAns += '\n';
-			strMAns += "Ãô½ÝDEX=3D6*5=";
+			strMAns += "æ•æ·DEX=3D6*5=";
 			strMAns += num2str(RollDice("3D6", strNoUse) * 5);
 			strMAns += '\n';
-			strMAns += "ÍâÃ²APP=3D6*5=";
+			strMAns += "å¤–è²ŒAPP=3D6*5=";
 			strMAns += num2str(RollDice("3D6", strNoUse) * 5);
 			strMAns += '\n';
-			strMAns += "ÖÇÁ¦INT=(2D6+6)*5=";
+			strMAns += "æ™ºåŠ›INT=(2D6+6)*5=";
 			strMAns += num2str((RollDice("2D6", strNoUse) + 6) * 5);
 			strMAns += '\n';
-			strMAns += "ÒâÖ¾POW=(2D6+6)*5=";
+			strMAns += "æ„å¿—POW=(2D6+6)*5=";
 			strMAns += num2str((RollDice("2D6", strNoUse) + 6) * 5);
 			strMAns += '\n';
-			strMAns += "½ÌÓýEDU=(2D6+6)*5=";
+			strMAns += "æ•™è‚²EDU=(2D6+6)*5=";
 			strMAns += num2str((RollDice("2D6", strNoUse) + 6) * 5);
 			strMAns += '\n';
-			strMAns += "ÐÒÔËLUCK=3D6*5=";
+			strMAns += "å¹¸è¿LUCK=3D6*5=";
 			strMAns += num2str(RollDice("3D6", strNoUse) * 5);
 			CQ_sendGroupMsg(ac,fromGroup,strMAns.c_str());
 		}
-		else if (strSecondInput == "Áù°æÈËÎï×÷³É") {
+		else if (strSecondInput == "å…­ç‰ˆäººç‰©ä½œæˆ") {
 			string strMAns = num2str(fromQQ);
 			string strNoUse;
-			strMAns += "µÄÈËÎï×÷³É: ";
+			strMAns += "çš„äººç‰©ä½œæˆ: ";
 			strMAns += '\n';
-			strMAns += "Á¦Á¿STR=3D6=";
+			strMAns += "åŠ›é‡STR=3D6=";
 			strMAns += num2str(RollDice("3D6", strNoUse));
 			strMAns += '\n';
-			strMAns += "ÌåÖÊCON=3D6=";
+			strMAns += "ä½“è´¨CON=3D6=";
 			strMAns += num2str(RollDice("3D6", strNoUse));
 			strMAns += '\n';
-			strMAns += "ÌåÐÍSIZ=3D6=";
+			strMAns += "ä½“åž‹SIZ=3D6=";
 			strMAns += num2str(RollDice("3D6", strNoUse));
 			strMAns += '\n';
-			strMAns += "Ãô½ÝDEX=3D6=";
+			strMAns += "æ•æ·DEX=3D6=";
 			strMAns += num2str(RollDice("3D6", strNoUse));
 			strMAns += '\n';
-			strMAns += "ÍâÃ²APP=3D6=";
+			strMAns += "å¤–è²ŒAPP=3D6=";
 			strMAns += num2str(RollDice("3D6", strNoUse));
 			strMAns += '\n';
-			strMAns += "ÖÇÁ¦INT=2D6+6=";
+			strMAns += "æ™ºåŠ›INT=2D6+6=";
 			strMAns += num2str(RollDice("2D6", strNoUse) + 6);
 			strMAns += '\n';
-			strMAns += "ÒâÖ¾POW=2D6+6=";
+			strMAns += "æ„å¿—POW=2D6+6=";
 			strMAns += num2str(RollDice("2D6", strNoUse) + 6);
 			strMAns += '\n';
-			strMAns += "½ÌÓýEDU=3D6+3=";
+			strMAns += "æ•™è‚²EDU=3D6+3=";
 			strMAns += num2str(RollDice("3D6", strNoUse) + 3);
 			CQ_sendGroupMsg(ac, fromGroup, strMAns.c_str());
 		}
 		else {
-			int intReadMsgCnt = 3;
+			int intReadMsgCnt = 2;
 			int intTmp;
 			string strAns;//Output string
 			strAns += num2str(fromQQ);//Add the QQ number at the front(Next version:Nickname)
-			strAns += "÷»³öÁË";
+			strAns += "éª°å‡ºäº†";
 			strAns += ": ";
 
 			while (msg[intReadMsgCnt] == ' ')intReadMsgCnt++;//Skip the space
@@ -238,7 +238,7 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t sendTime, int64_t
 			}
 			if (strReason != "") {
 				strAns = strReason + strAns;
-				strAns = "ÓÉÓÚ" + strAns;//Add the reason at the front of the output
+				strAns = "ç”±äºŽ" + strAns;//Add the reason at the front of the output
 			}
 			strAns[strAns.length() - 1] = '=';//There will be an unnecessary "+" in the end.Use "=" to replace it.
 			strAns += secondaryRes;
@@ -252,83 +252,83 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t sendTime, int64_t
 }
 
 CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t sendTime, int64_t fromQQ, const char *msg, int32_t font) {
-	if (msg[0] == '.'&&msg[1] == 'r'&&msg[2]=='d') {
+	if (msg[0] == '.'&&msg[1] == 'o') {
 		string strSecondInput;
-		int intCustomMsg = 3;
+		int intCustomMsg = 2;
 		while (msg[intCustomMsg] == ' ')intCustomMsg++;
 		while (msg[intCustomMsg] != ' '&&msg[intCustomMsg] != '\0') {
 			strSecondInput += msg[intCustomMsg];
 			intCustomMsg++;
 		}
-		if (strSecondInput == "ÈËÎï×÷³É") {
+		if (strSecondInput == "äººç‰©ä½œæˆ") {
 			string strMAns = num2str(fromQQ);
 			string strNoUse;
-			strMAns += "µÄÈËÎï×÷³É: ";
+			strMAns += "çš„äººç‰©ä½œæˆ: ";
 			strMAns += '\n';
-			strMAns += "Á¦Á¿STR=3D6*5=";
+			strMAns += "åŠ›é‡STR=3D6*5=";
 			strMAns += num2str(RollDice("3D6", strNoUse) * 5);
 			strMAns += '\n';
-			strMAns += "ÌåÖÊCON=3D6*5=";
+			strMAns += "ä½“è´¨CON=3D6*5=";
 			strMAns += num2str(RollDice("3D6", strNoUse) * 5);
 			strMAns += '\n';
-			strMAns += "ÌåÐÍSIZ=3D6*5=";
+			strMAns += "ä½“åž‹SIZ=3D6*5=";
 			strMAns += num2str(RollDice("3D6", strNoUse) * 5);
 			strMAns += '\n';
-			strMAns += "Ãô½ÝDEX=3D6*5=";
+			strMAns += "æ•æ·DEX=3D6*5=";
 			strMAns += num2str(RollDice("3D6", strNoUse) * 5);
 			strMAns += '\n';
-			strMAns += "ÍâÃ²APP=3D6*5=";
+			strMAns += "å¤–è²ŒAPP=3D6*5=";
 			strMAns += num2str(RollDice("3D6", strNoUse) * 5);
 			strMAns += '\n';
-			strMAns += "ÖÇÁ¦INT=(2D6+6)*5=";
+			strMAns += "æ™ºåŠ›INT=(2D6+6)*5=";
 			strMAns += num2str((RollDice("2D6", strNoUse) + 6) * 5);
 			strMAns += '\n';
-			strMAns += "ÒâÖ¾POW=(2D6+6)*5=";
+			strMAns += "æ„å¿—POW=(2D6+6)*5=";
 			strMAns += num2str((RollDice("2D6", strNoUse) + 6) * 5);
 			strMAns += '\n';
-			strMAns += "½ÌÓýEDU=(2D6+6)*5=";
+			strMAns += "æ•™è‚²EDU=(2D6+6)*5=";
 			strMAns += num2str((RollDice("2D6", strNoUse) + 6) * 5);
 			strMAns += '\n';
-			strMAns += "ÐÒÔËLUCK=3D6*5=";
+			strMAns += "å¹¸è¿LUCK=3D6*5=";
 			strMAns += num2str(RollDice("3D6", strNoUse) * 5);
 			CQ_sendPrivateMsg(ac, fromQQ, strMAns.c_str());
 		}
-		else if (strSecondInput == "Áù°æÈËÎï×÷³É") {
+		else if (strSecondInput == "å…­ç‰ˆäººç‰©ä½œæˆ") {
 			string strMAns = num2str(fromQQ);
 			string strNoUse;
-			strMAns += "µÄÈËÎï×÷³É: ";
+			strMAns += "çš„äººç‰©ä½œæˆ: ";
 			strMAns += '\n';
-			strMAns += "Á¦Á¿STR=3D6=";
+			strMAns += "åŠ›é‡STR=3D6=";
 			strMAns += num2str(RollDice("3D6", strNoUse));
 			strMAns += '\n';
-			strMAns += "ÌåÖÊCON=3D6=";
+			strMAns += "ä½“è´¨CON=3D6=";
 			strMAns += num2str(RollDice("3D6", strNoUse));
 			strMAns += '\n';
-			strMAns += "ÌåÐÍSIZ=3D6=";
+			strMAns += "ä½“åž‹SIZ=3D6=";
 			strMAns += num2str(RollDice("3D6", strNoUse));
 			strMAns += '\n';
-			strMAns += "Ãô½ÝDEX=3D6=";
+			strMAns += "æ•æ·DEX=3D6=";
 			strMAns += num2str(RollDice("3D6", strNoUse));
 			strMAns += '\n';
-			strMAns += "ÍâÃ²APP=3D6=";
+			strMAns += "å¤–è²ŒAPP=3D6=";
 			strMAns += num2str(RollDice("3D6", strNoUse));
 			strMAns += '\n';
-			strMAns += "ÖÇÁ¦INT=2D6+6=";
+			strMAns += "æ™ºåŠ›INT=2D6+6=";
 			strMAns += num2str(RollDice("2D6", strNoUse) + 6);
 			strMAns += '\n';
-			strMAns += "ÒâÖ¾POW=2D6+6=";
+			strMAns += "æ„å¿—POW=2D6+6=";
 			strMAns += num2str(RollDice("2D6", strNoUse) + 6);
 			strMAns += '\n';
-			strMAns += "½ÌÓýEDU=3D6+3=";
+			strMAns += "æ•™è‚²EDU=3D6+3=";
 			strMAns += num2str(RollDice("3D6", strNoUse) + 3);
 			CQ_sendPrivateMsg(ac, fromQQ, strMAns.c_str());
 		}
 		else {
-			int intReadMsgCnt = 3;
+			int intReadMsgCnt = 2;
 			int intTmp;
 			string strAns;//Output string
 			strAns += num2str(fromQQ);//Add the QQ number at the front(Next version:Nickname)
-			strAns += "÷»³öÁË";
+			strAns += "éª°å‡ºäº†";
 			strAns += ": ";
 
 			while (msg[intReadMsgCnt] == ' ')intReadMsgCnt++;//Skip the space
@@ -365,7 +365,7 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t sendTime, int64
 			}
 			if (strReason != "") {
 				strAns = strReason + strAns;
-				strAns = "ÓÉÓÚ" + strAns;//Add the reason at the front of the output
+				strAns = "ç”±äºŽ" + strAns;//Add the reason at the front of the output
 			}
 			strAns[strAns.length() - 1] = '=';//There will be an unnecessary "+" in the end.Use "=" to replace it.
 			strAns += secondaryRes;
@@ -379,7 +379,6 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t sendTime, int64
 }
 
 CQEVENT(int32_t, __menuA, 0)() {
-	MessageBoxA(nullptr, "Ê¹ÓÃ·½·¨:\n\tÆÕÍ¨÷»×Ó: .rd ÷»×ÓÀàÐÍ Ô­Òò(¿ÉÑ¡)\n\r±¾Èí¼þ»¹¸½´øÁù°æºÍÆß°æÈËÎï×÷³É£¬ÃüÁîÎª.rd Áù°æÈËÎï×÷³ÉºÍ.rd Æß°æÈËÎï×÷³É", "Help", MB_OK+MB_ICONINFORMATION);
+	MessageBoxA(nullptr, "ä½¿ç”¨æ–¹æ³•:\n\tæ™®é€šéª°å­: .o éª°å­ç±»åž‹ åŽŸå› (å¯é€‰)\n\ræœ¬è½¯ä»¶è¿˜é™„å¸¦å…­ç‰ˆå’Œä¸ƒç‰ˆäººç‰©ä½œæˆï¼Œå‘½ä»¤ä¸º.o å…­ç‰ˆäººç‰©ä½œæˆå’Œ.o ä¸ƒç‰ˆäººç‰©ä½œæˆ", "Help", MB_OK+MB_ICONINFORMATION);
 	return 0;
 }
-/*\n\tÔÚÓ¦ÓÃ³ÌÐòÄ¿Â¼ÏÂµÄconfig.iniÖÐ¿ÉÒÔÉèÖÃ×Ô¶¨ÒåÖÀ÷»,ÃüÁîÎª.rd ×Ô¶¨ÒåÖÀ÷»ÃüÁî\n\tÔÚconfig.iniÖÐÄ¬ÈÏ*/
