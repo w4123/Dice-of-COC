@@ -22,5 +22,4 @@
 #include <cstdio>
 #include <sstream>
 #include <string>
-#include <windows.h>
 #include <fstream>
