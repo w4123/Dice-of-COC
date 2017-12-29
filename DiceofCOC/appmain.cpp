@@ -6,27 +6,27 @@
 /*
 * Dice of COC(VC++) 
 * Written by w4123
-* Version 1.2.1
+* Version 1.2.2
 * Commercial use is prohibited.
 */
 #include "stdafx.h"
 #include "string"
 #include "cqp.h"
-#include "appmain.h" //Ó¦ÓÃAppIDµÈĞÅÏ¢£¬ÇëÕıÈ·ÌîĞ´£¬·ñÔò¿áQ¿ÉÄÜÎŞ·¨¼ÓÔØ
+#include "appmain.h" //åº”ç”¨AppIDç­‰ä¿¡æ¯ï¼Œè¯·æ­£ç¡®å¡«å†™ï¼Œå¦åˆ™é…·Qå¯èƒ½æ— æ³•åŠ è½½
 
 using namespace std;
 
-int ac = -1; //AuthCode µ÷ÓÃ¿áQµÄ·½·¨Ê±ĞèÒªÓÃµ½
-static string hlpmsg = "Ê¹ÓÃ·½·¨:\n\tÆÕÍ¨÷»×Ó: .o ÷»×ÓÀàĞÍ Ô­Òò(¿ÉÑ¡)\n\t±¾Èí¼ş»¹¸½´øÁù°æºÍÆß°æÈËÎï×÷³É£¬ÃüÁîÎª.o Áù°æÈËÎï×÷³ÉºÍ.o Æß°æÈËÎï×÷³É\n\t°æ±¾:1.2.1\n\tÎÊÌâ·´À¡ÇëÁªÏµQQ1840686745";
+int ac = -1; //AuthCode è°ƒç”¨é…·Qçš„æ–¹æ³•æ—¶éœ€è¦ç”¨åˆ°
+static string hlpmsg = "ä½¿ç”¨æ–¹æ³•:\n\tæ™®é€šéª°å­: .o éª°å­ç±»å‹ åŸå› (å¯é€‰)\n\tæœ¬è½¯ä»¶è¿˜é™„å¸¦å…­ç‰ˆå’Œä¸ƒç‰ˆäººç‰©ä½œæˆï¼Œå‘½ä»¤ä¸º.o å…­ç‰ˆäººç‰©ä½œæˆå’Œ.o äººç‰©ä½œæˆ\n\tç‰ˆæœ¬:1.2.2\n\té—®é¢˜åé¦ˆè¯·è”ç³»QQ1840686745";
 /* 
-* ·µ»ØÓ¦ÓÃµÄApiVer¡¢Appid£¬´ò°üºó½«²»»áµ÷ÓÃ
+* è¿”å›åº”ç”¨çš„ApiVerã€Appidï¼Œæ‰“åŒ…åå°†ä¸ä¼šè°ƒç”¨
 */
 CQEVENT(const char*, AppInfo, 0)() {
 	return CQAPPINFO;
 }
 /* 
-* ½ÓÊÕ Ó¦ÓÃAuthCode£¬¿áQ¶ÁÈ¡Ó¦ÓÃĞÅÏ¢ºó£¬Èç¹û½ÓÊÜ¸ÃÓ¦ÓÃ£¬½«»áµ÷ÓÃÕâ¸öº¯Êı²¢´«µİAuthCode¡£
-* ²»ÒªÔÚ±¾º¯Êı´¦ÀíÆäËûÈÎºÎ´úÂë£¬ÒÔÃâ·¢ÉúÒì³£Çé¿ö¡£ÈçĞèÖ´ĞĞ³õÊ¼»¯´úÂëÇëÔÚStartupÊÂ¼şÖĞÖ´ĞĞ£¨Type=1001£©¡£
+* æ¥æ”¶ åº”ç”¨AuthCodeï¼Œé…·Qè¯»å–åº”ç”¨ä¿¡æ¯åï¼Œå¦‚æœæ¥å—è¯¥åº”ç”¨ï¼Œå°†ä¼šè°ƒç”¨è¿™ä¸ªå‡½æ•°å¹¶ä¼ é€’AuthCodeã€‚
+* ä¸è¦åœ¨æœ¬å‡½æ•°å¤„ç†å…¶ä»–ä»»ä½•ä»£ç ï¼Œä»¥å…å‘ç”Ÿå¼‚å¸¸æƒ…å†µã€‚å¦‚éœ€æ‰§è¡Œåˆå§‹åŒ–ä»£ç è¯·åœ¨Startupäº‹ä»¶ä¸­æ‰§è¡Œï¼ˆType=1001ï¼‰ã€‚
 */
 CQEVENT(int32_t, Initialize, 4)(int32_t AuthCode) {
 	ac = AuthCode;
@@ -198,52 +198,52 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t sendTime, int64_t
 			strSecondInput += msg[intCustomMsg];
 			intCustomMsg++;
 		}
-		if (strSecondInput == "ÈËÎï×÷³É") {
+		if (strSecondInput == "äººç‰©ä½œæˆ") {
 			string strMAns = to_string(fromQQ);
-			strMAns += "µÄÈËÎï×÷³É: ";
+			strMAns += "çš„äººç‰©ä½œæˆ: ";
 			strMAns += '\n';
-			strMAns += "Á¦Á¿STR=3D6*5=";
+			strMAns += "åŠ›é‡STR=3D6*5=";
 			int STR = RollDice("3D6") * 5;
 			strMAns += to_string(STR) + "/" + to_string(STR / 2) + "/" + to_string(STR / 5);
 			strMAns += '\n';
-			strMAns += "ÌåÖÊCON=3D6*5=";
+			strMAns += "ä½“è´¨CON=3D6*5=";
 			int CON = RollDice("3D6") * 5;
 			strMAns += to_string(CON) + "/" + to_string(CON / 2) + "/" + to_string(CON / 5);
 			strMAns += '\n';
-			strMAns += "ÌåĞÍSIZ=3D6*5=";
+			strMAns += "ä½“å‹SIZ=3D6*5=";
 			int SIZ = RollDice("3D6") * 5;
 			strMAns += to_string(SIZ) + "/" + to_string(SIZ / 2) + "/" + to_string(SIZ / 5);
 			strMAns += '\n';
-			strMAns += "Ãô½İDEX=3D6*5=";
+			strMAns += "æ•æ·DEX=3D6*5=";
 			int DEX = RollDice("3D6") * 5;
 			strMAns += to_string(DEX) + "/" + to_string(DEX / 2) + "/" + to_string(DEX / 5);
 			strMAns += '\n';
-			strMAns += "ÍâÃ²APP=3D6*5=";
+			strMAns += "å¤–è²ŒAPP=3D6*5=";
 			int APP = RollDice("3D6") * 5;
 			strMAns += to_string(APP) + "/" + to_string(APP / 2) + "/" + to_string(APP / 5);
 			strMAns += '\n';
-			strMAns += "ÖÇÁ¦INT=(2D6+6)*5=";
+			strMAns += "æ™ºåŠ›INT=(2D6+6)*5=";
 			int INT = (RollDice("2D6") + 6) * 5;
 			strMAns += to_string(INT) + "/" + to_string(INT / 2) + "/" + to_string(INT / 5);
 			strMAns += '\n';
-			strMAns += "ÒâÖ¾POW=(2D6+6)*5=";
+			strMAns += "æ„å¿—POW=(2D6+6)*5=";
 			int POW = (RollDice("2D6") + 6) * 5;
 			strMAns += to_string(POW) + "/" + to_string(POW / 2) + "/" + to_string(POW / 5);
 			strMAns += '\n';
-			strMAns += "½ÌÓıEDU=(2D6+6)*5=";
+			strMAns += "æ•™è‚²EDU=(2D6+6)*5=";
 			int EDU = (RollDice("2D6") + 6) * 5;
 			strMAns += to_string(EDU) + "/" + to_string(EDU / 2) + "/" + to_string(EDU / 5);
 			strMAns += '\n';
-			strMAns += "ĞÒÔËLUCK=3D6*5=";
+			strMAns += "å¹¸è¿LUCK=3D6*5=";
 			int LUCK = RollDice("3D6") * 5;
 			strMAns += to_string(LUCK);
-			strMAns += "\nÀíÖÇSAN=POW=";
+			strMAns += "\nç†æ™ºSAN=POW=";
 			int SAN = POW;
 			strMAns += to_string(SAN);
-			strMAns += "\nÉúÃüÖµHP=(SIZ+CON)/10=";
+			strMAns += "\nç”Ÿå‘½å€¼HP=(SIZ+CON)/10=";
 			int HP = (SIZ + CON) / 10;
 			strMAns += to_string(HP);
-			strMAns += "\nÄ§·¨ÖµMP=POW/5=";
+			strMAns += "\né­”æ³•å€¼MP=POW/5=";
 			int MP = POW / 5;
 			strMAns += to_string(MP);
 			string DB;
@@ -269,50 +269,50 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t sendTime, int64_t
 				build = 2;
 			}
 			else {
-				DB = "¼ÆËã´íÎó!";
+				DB = "è®¡ç®—é”™è¯¯!";
 				build = -10;
 			}
-			strMAns += "\nÉËº¦¼ÓÖµDB=" + DB + "\nÌå¸ñ=" + (build == -10 ? "¼ÆËã´íÎó" : to_string(build));
+			strMAns += "\nä¼¤å®³åŠ å€¼DB=" + DB + "\nä½“æ ¼=" + (build == -10 ? "è®¡ç®—é”™è¯¯" : to_string(build));
 			int MOV = 0;
 			if (DEX < SIZ&&STR < SIZ)MOV = 7;
 			else if (DEX > SIZ && STR > SIZ)MOV = 9;
 			else MOV = 8;
-			strMAns += "\nÒÆ¶¯Á¦MOV=" + to_string(MOV);
+			strMAns += "\nç§»åŠ¨åŠ›MOV=" + to_string(MOV);
 			CQ_sendGroupMsg(ac,fromGroup,strMAns.c_str());
 		}
-		else if (strSecondInput == "Áù°æÈËÎï×÷³É") {
+		else if (strSecondInput == "å…­ç‰ˆäººç‰©ä½œæˆ") {
 			string strMAns = to_string(fromQQ);
-			strMAns += "µÄÈËÎï×÷³É: ";
+			strMAns += "çš„äººç‰©ä½œæˆ: ";
 			strMAns += '\n';
-			strMAns += "Á¦Á¿STR=3D6=";
+			strMAns += "åŠ›é‡STR=3D6=";
 			int STR = RollDice("3D6");
 			strMAns += to_string(STR);
 			strMAns += '\n';
-			strMAns += "ÌåÖÊCON=3D6=";
+			strMAns += "ä½“è´¨CON=3D6=";
 			int CON = RollDice("3D6");
 			strMAns += to_string(CON);
 			strMAns += '\n';
-			strMAns += "ÌåĞÍSIZ=3D6=";
+			strMAns += "ä½“å‹SIZ=3D6=";
 			int SIZ = RollDice("3D6");
 			strMAns += to_string(SIZ);
 			strMAns += '\n';
-			strMAns += "Ãô½İDEX=3D6=";
+			strMAns += "æ•æ·DEX=3D6=";
 			int DEX = RollDice("3D6");
 			strMAns += to_string(DEX);
 			strMAns += '\n';
-			strMAns += "ÍâÃ²APP=3D6=";
+			strMAns += "å¤–è²ŒAPP=3D6=";
 			int APP = RollDice("3D6");
 			strMAns += to_string(APP);
 			strMAns += '\n';
-			strMAns += "ÖÇÁ¦INT=2D6+6=";
+			strMAns += "æ™ºåŠ›INT=2D6+6=";
 			int INT = RollDice("2D6") + 6;
 			strMAns += to_string(INT);
 			strMAns += '\n';
-			strMAns += "ÒâÖ¾POW=2D6+6=";
+			strMAns += "æ„å¿—POW=2D6+6=";
 			int POW = RollDice("2D6") + 6;
 			strMAns += to_string(POW);
 			strMAns += '\n';
-			strMAns += "½ÌÓıEDU=3D6+3=";
+			strMAns += "æ•™è‚²EDU=3D6+3=";
 			int EDU = RollDice("3D6") + 3;
 			strMAns += to_string(EDU);
 			int SAN = POW * 5;
@@ -321,9 +321,9 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t sendTime, int64_t
 			int KNOW = EDU * 5;
 			int HP = CON + SIZ;
 			int MP = POW;
-			strMAns += "\nÀíÖÇSAN=POW*5=" + to_string(SAN) + "\nÁé¸ĞIDEA=INT*5=" + to_string(IDEA) + "\nĞÒÔËLUCK=POW*5=" + to_string(LUCK) + "\nÖªÊ¶KNOW=EDU*5=" + to_string(KNOW);
-			strMAns += "\nÉúÃüÖµHP=CON+SIZ=" + to_string(HP) + "\nÄ§·¨ÖµMP=POW=" + to_string(MP);
-			strMAns += "\nÉËº¦½±Àø=";
+			strMAns += "\nç†æ™ºSAN=POW*5=" + to_string(SAN) + "\nçµæ„ŸIDEA=INT*5=" + to_string(IDEA) + "\nå¹¸è¿LUCK=POW*5=" + to_string(LUCK) + "\nçŸ¥è¯†KNOW=EDU*5=" + to_string(KNOW);
+			strMAns += "\nç”Ÿå‘½å€¼HP=CON+SIZ=" + to_string(HP) + "\né­”æ³•å€¼MP=POW=" + to_string(MP);
+			strMAns += "\nä¼¤å®³å¥–åŠ±=";
 			string DB;
 			if (STR + SIZ >= 2 && STR + SIZ <= 12) {
 				DB = "-1D6";
@@ -341,12 +341,12 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t sendTime, int64_t
 				DB = "1D6";
 			}
 			else {
-				DB = "¼ÆËã´íÎó!";
+				DB = "è®¡ç®—é”™è¯¯!";
 			}
 			strMAns += DB;
 			CQ_sendGroupMsg(ac, fromGroup, strMAns.c_str());
 		}
-		else if (strSecondInput == "°ïÖú" || strSecondInput == "help") {
+		else if (strSecondInput == "å¸®åŠ©" || strSecondInput == "help") {
 			CQ_sendGroupMsg(ac, fromGroup, hlpmsg.c_str());
 		}
 		else {
@@ -354,7 +354,7 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t sendTime, int64_t
 			int intTmp;
 			string strAns;//Output string
 			strAns += to_string(fromQQ);//Add the QQ number at the front(Next version:Nickname)
-			strAns += "÷»³öÁË";
+			strAns += "éª°å‡ºäº†";
 			strAns += ": ";
 
 			while (msg[intReadMsgCnt] == ' ')intReadMsgCnt++;//Skip the space
@@ -369,7 +369,7 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t sendTime, int64_t
 				if (msg[intReadMsgCnt] == '+') {
 					int ttmpRes = RollDice(strSeparateDice, strAns);
 					if (ttmpRes == -1) {
-						CQ_sendGroupMsg(ac, fromGroup, "ÊäÈë´íÎó!ÊäÈë.o help»ò.o °ïÖúÀ´»ñµÃ°ïÖú!");
+						CQ_sendGroupMsg(ac, fromGroup, "è¾“å…¥é”™è¯¯!è¾“å…¥.o helpæˆ–.o å¸®åŠ©æ¥è·å¾—å¸®åŠ©!");
 						return EVENT_BLOCK;
 					}
 					mainsum += ttmpRes;
@@ -384,7 +384,7 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t sendTime, int64_t
 			}
 			int ttmpRes = RollDice(strSeparateDice, strAns);
 			if (ttmpRes == -1) {
-				CQ_sendGroupMsg(ac, fromGroup, "ÊäÈë´íÎó!ÊäÈë.o help»ò.o °ïÖúÀ´»ñµÃ°ïÖú!");
+				CQ_sendGroupMsg(ac, fromGroup, "è¾“å…¥é”™è¯¯!è¾“å…¥.o helpæˆ–.o å¸®åŠ©æ¥è·å¾—å¸®åŠ©!");
 				return EVENT_BLOCK;
 			}
 			mainsum += ttmpRes;
@@ -398,7 +398,7 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t sendTime, int64_t
 			}
 			if (strReason != "") {
 				strAns = strReason + strAns;
-				strAns = "ÓÉÓÚ" + strAns;//Add the reason at the front of the output
+				strAns = "ç”±äº" + strAns;//Add the reason at the front of the output
 			}
 			strAns[strAns.length() - 1] = '=';//There will be an unnecessary "+" in the end.Use "=" to replace it.
 			strAns += secondaryRes;
@@ -420,52 +420,52 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t sendTime, int64
 			strSecondInput += msg[intCustomMsg];
 			intCustomMsg++;
 		}
-		if (strSecondInput == "ÈËÎï×÷³É") {
+		if (strSecondInput == "äººç‰©ä½œæˆ") {
 			string strMAns = to_string(fromQQ);
-			strMAns += "µÄÈËÎï×÷³É: ";
+			strMAns += "çš„äººç‰©ä½œæˆ: ";
 			strMAns += '\n';
-			strMAns += "Á¦Á¿STR=3D6*5=";
+			strMAns += "åŠ›é‡STR=3D6*5=";
 			int STR = RollDice("3D6") * 5;
 			strMAns += to_string(STR) + "/" + to_string(STR / 2) + "/" + to_string(STR / 5);
 			strMAns += '\n';
-			strMAns += "ÌåÖÊCON=3D6*5=";
+			strMAns += "ä½“è´¨CON=3D6*5=";
 			int CON = RollDice("3D6") * 5;
 			strMAns += to_string(CON) + "/" + to_string(CON / 2) + "/" + to_string(CON / 5);
 			strMAns += '\n';
-			strMAns += "ÌåĞÍSIZ=3D6*5=";
+			strMAns += "ä½“å‹SIZ=3D6*5=";
 			int SIZ = RollDice("3D6") * 5;
 			strMAns += to_string(SIZ) + "/" + to_string(SIZ / 2) + "/" + to_string(SIZ / 5);
 			strMAns += '\n';
-			strMAns += "Ãô½İDEX=3D6*5=";
+			strMAns += "æ•æ·DEX=3D6*5=";
 			int DEX = RollDice("3D6") * 5;
 			strMAns += to_string(DEX) + "/" + to_string(DEX / 2) + "/" + to_string(DEX / 5);
 			strMAns += '\n';
-			strMAns += "ÍâÃ²APP=3D6*5=";
+			strMAns += "å¤–è²ŒAPP=3D6*5=";
 			int APP = RollDice("3D6") * 5;
 			strMAns += to_string(APP) + "/" + to_string(APP / 2) + "/" + to_string(APP / 5);
 			strMAns += '\n';
-			strMAns += "ÖÇÁ¦INT=(2D6+6)*5=";
+			strMAns += "æ™ºåŠ›INT=(2D6+6)*5=";
 			int INT = (RollDice("2D6") + 6) * 5;
 			strMAns += to_string(INT) + "/" + to_string(INT / 2) + "/" + to_string(INT / 5);
 			strMAns += '\n';
-			strMAns += "ÒâÖ¾POW=(2D6+6)*5=";
+			strMAns += "æ„å¿—POW=(2D6+6)*5=";
 			int POW = (RollDice("2D6") + 6) * 5;
 			strMAns += to_string(POW) + "/" + to_string(POW / 2) + "/" + to_string(POW / 5);
 			strMAns += '\n';
-			strMAns += "½ÌÓıEDU=(2D6+6)*5=";
+			strMAns += "æ•™è‚²EDU=(2D6+6)*5=";
 			int EDU = (RollDice("2D6") + 6) * 5;
 			strMAns += to_string(EDU) + "/" + to_string(EDU / 2) + "/" + to_string(EDU / 5);
 			strMAns += '\n';
-			strMAns += "ĞÒÔËLUCK=3D6*5=";
+			strMAns += "å¹¸è¿LUCK=3D6*5=";
 			int LUCK = RollDice("3D6") * 5;
 			strMAns += to_string(LUCK);
-			strMAns += "\nÀíÖÇSAN=POW=";
+			strMAns += "\nç†æ™ºSAN=POW=";
 			int SAN = POW;
 			strMAns += to_string(SAN);
-			strMAns += "\nÉúÃüÖµHP=(SIZ+CON)/10=";
+			strMAns += "\nç”Ÿå‘½å€¼HP=(SIZ+CON)/10=";
 			int HP = (SIZ + CON) / 10;
 			strMAns += to_string(HP);
-			strMAns += "\nÄ§·¨ÖµMP=POW/5=";
+			strMAns += "\né­”æ³•å€¼MP=POW/5=";
 			int MP = POW / 5;
 			strMAns += to_string(MP);
 			string DB;
@@ -491,50 +491,50 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t sendTime, int64
 				build = 2;
 			}
 			else {
-				DB = "¼ÆËã´íÎó!";
+				DB = "è®¡ç®—é”™è¯¯!";
 				build = -10;
 			}
-			strMAns += "\nÉËº¦¼ÓÖµDB=" + DB + "\nÌå¸ñ=" + (build == -10 ? "¼ÆËã´íÎó" : to_string(build));
+			strMAns += "\nä¼¤å®³åŠ å€¼DB=" + DB + "\nä½“æ ¼=" + (build == -10 ? "è®¡ç®—é”™è¯¯" : to_string(build));
 			int MOV = 0;
 			if (DEX < SIZ&&STR < SIZ)MOV = 7;
 			else if (DEX > SIZ && STR > SIZ)MOV = 9;
 			else MOV = 8;
-			strMAns += "\nÒÆ¶¯Á¦MOV=" + to_string(MOV);
+			strMAns += "\nç§»åŠ¨åŠ›MOV=" + to_string(MOV);
 			CQ_sendPrivateMsg(ac, fromQQ, strMAns.c_str());
 		}
-		else if (strSecondInput == "Áù°æÈËÎï×÷³É") {
+		else if (strSecondInput == "å…­ç‰ˆäººç‰©ä½œæˆ") {
 			string strMAns = to_string(fromQQ);
-			strMAns += "µÄÈËÎï×÷³É: ";
+			strMAns += "çš„äººç‰©ä½œæˆ: ";
 			strMAns += '\n';
-			strMAns += "Á¦Á¿STR=3D6=";
+			strMAns += "åŠ›é‡STR=3D6=";
 			int STR = RollDice("3D6");
 			strMAns += to_string(STR);
 			strMAns += '\n';
-			strMAns += "ÌåÖÊCON=3D6=";
+			strMAns += "ä½“è´¨CON=3D6=";
 			int CON = RollDice("3D6");
 			strMAns += to_string(CON);
 			strMAns += '\n';
-			strMAns += "ÌåĞÍSIZ=3D6=";
+			strMAns += "ä½“å‹SIZ=3D6=";
 			int SIZ = RollDice("3D6");
 			strMAns += to_string(SIZ);
 			strMAns += '\n';
-			strMAns += "Ãô½İDEX=3D6=";
+			strMAns += "æ•æ·DEX=3D6=";
 			int DEX = RollDice("3D6");
 			strMAns += to_string(DEX);
 			strMAns += '\n';
-			strMAns += "ÍâÃ²APP=3D6=";
+			strMAns += "å¤–è²ŒAPP=3D6=";
 			int APP = RollDice("3D6");
 			strMAns += to_string(APP);
 			strMAns += '\n';
-			strMAns += "ÖÇÁ¦INT=2D6+6=";
+			strMAns += "æ™ºåŠ›INT=2D6+6=";
 			int INT = RollDice("2D6") + 6;
 			strMAns += to_string(INT);
 			strMAns += '\n';
-			strMAns += "ÒâÖ¾POW=2D6+6=";
+			strMAns += "æ„å¿—POW=2D6+6=";
 			int POW = RollDice("2D6") + 6;
 			strMAns += to_string(POW);
 			strMAns += '\n';
-			strMAns += "½ÌÓıEDU=3D6+3=";
+			strMAns += "æ•™è‚²EDU=3D6+3=";
 			int EDU = RollDice("3D6") + 3;
 			strMAns += to_string(EDU);
 			int SAN = POW * 5;
@@ -543,9 +543,9 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t sendTime, int64
 			int KNOW = EDU * 5;
 			int HP = CON + SIZ;
 			int MP = POW;
-			strMAns += "\nÀíÖÇSAN=POW*5=" + to_string(SAN) + "\nÁé¸ĞIDEA=INT*5=" + to_string(IDEA) + "\nĞÒÔËLUCK=POW*5=" + to_string(LUCK) + "\nÖªÊ¶KNOW=EDU*5=" + to_string(KNOW);
-			strMAns += "\nÉúÃüÖµHP=CON+SIZ=" + to_string(HP) + "\nÄ§·¨ÖµMP=POW=" + to_string(MP);
-			strMAns += "\nÉËº¦½±Àø=";
+			strMAns += "\nç†æ™ºSAN=POW*5=" + to_string(SAN) + "\nçµæ„ŸIDEA=INT*5=" + to_string(IDEA) + "\nå¹¸è¿LUCK=POW*5=" + to_string(LUCK) + "\nçŸ¥è¯†KNOW=EDU*5=" + to_string(KNOW);
+			strMAns += "\nç”Ÿå‘½å€¼HP=CON+SIZ=" + to_string(HP) + "\né­”æ³•å€¼MP=POW=" + to_string(MP);
+			strMAns += "\nä¼¤å®³å¥–åŠ±=";
 			string DB;
 			if (STR + SIZ >= 2 && STR + SIZ <= 12) {
 				DB = "-1D6";
@@ -563,12 +563,12 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t sendTime, int64
 				DB = "1D6";
 			}
 			else {
-				DB = "¼ÆËã´íÎó!";
+				DB = "è®¡ç®—é”™è¯¯!";
 			}
 			strMAns += DB;
 			CQ_sendPrivateMsg(ac, fromQQ, strMAns.c_str());
 		}
-		else if (strSecondInput == "°ïÖú" || strSecondInput == "help") {
+		else if (strSecondInput == "å¸®åŠ©" || strSecondInput == "help") {
 			CQ_sendPrivateMsg(ac, fromQQ, hlpmsg.c_str());
 		}
 		else {
@@ -576,7 +576,7 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t sendTime, int64
 			int intTmp;
 			string strAns;//Output string
 			strAns += to_string(fromQQ);//Add the QQ number at the front(Next version:Nickname)
-			strAns += "÷»³öÁË";
+			strAns += "éª°å‡ºäº†";
 			strAns += ": ";
 
 			while (msg[intReadMsgCnt] == ' ')intReadMsgCnt++;//Skip the space
@@ -591,7 +591,7 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t sendTime, int64
 				if (msg[intReadMsgCnt] == '+') {
 					int ttmpRes = RollDice(strSeparateDice, strAns);
 					if (ttmpRes == -1) {
-						CQ_sendPrivateMsg(ac, fromQQ, "ÊäÈë´íÎó!ÊäÈë.o help»ò.o °ïÖúÀ´»ñµÃ°ïÖú!");
+						CQ_sendPrivateMsg(ac, fromQQ, "è¾“å…¥é”™è¯¯!è¾“å…¥.o helpæˆ–.o å¸®åŠ©æ¥è·å¾—å¸®åŠ©!");
 						return EVENT_BLOCK;
 					}
 					//Call the function of rolling dice
@@ -607,7 +607,7 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t sendTime, int64
 			}
 			int ttmpRes = RollDice(strSeparateDice, strAns);
 			if (ttmpRes == -1) {
-				CQ_sendPrivateMsg(ac, fromQQ, "ÊäÈë´íÎó!ÊäÈë.o help»ò.o °ïÖúÀ´»ñµÃ°ïÖú!");
+				CQ_sendPrivateMsg(ac, fromQQ, "è¾“å…¥é”™è¯¯!è¾“å…¥.o helpæˆ–.o å¸®åŠ©æ¥è·å¾—å¸®åŠ©!");
 				return EVENT_BLOCK;
 			}
 			mainsum += ttmpRes;
@@ -621,7 +621,7 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t sendTime, int64
 			}
 			if (strReason != "") {
 				strAns = strReason + strAns;
-				strAns = "ÓÉÓÚ" + strAns;//Add the reason at the front of the output
+				strAns = "ç”±äº" + strAns;//Add the reason at the front of the output
 			}
 			strAns[strAns.length() - 1] = '=';//There will be an unnecessary "+" in the end.Use "=" to replace it.
 			strAns += secondaryRes;
