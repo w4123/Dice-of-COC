@@ -6,7 +6,7 @@
 /*
 * Dice of COC(VC++) 
 * Written by w4123
-* Version 1.2.2
+* Version 1.2.3
 * Commercial use is prohibited.
 */
 #include "stdafx.h"
@@ -17,7 +17,7 @@
 using namespace std;
 
 int ac = -1; //AuthCode 调用酷Q的方法时需要用到
-static string hlpmsg = "使用方法:\n\t普通骰子: .o 骰子类型 原因(可选)\n\t本软件还附带六版和七版人物作成，命令为.o 六版人物作成和.o 人物作成\n\t版本:1.2.2\n\t问题反馈请联系QQ1840686745";
+static string hlpmsg = "使用方法:\n\t普通骰子: .o 骰子类型 原因(可选)\n\t本软件还附带六版和七版人物作成，命令为.o 六版人物作成和.o 人物作成\n\t版本:1.2.3\n\t问题反馈请联系QQ1840686745";
 /* 
 * 返回应用的ApiVer、Appid，打包后将不会调用
 */
@@ -210,8 +210,8 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t sendTime, int64_t
 			int CON = RollDice("3D6") * 5;
 			strMAns += to_string(CON) + "/" + to_string(CON / 2) + "/" + to_string(CON / 5);
 			strMAns += '\n';
-			strMAns += "体型SIZ=3D6*5=";
-			int SIZ = RollDice("3D6") * 5;
+			strMAns += "体型SIZ=(2D6+6)*5=";
+			int SIZ = (RollDice("2D6") + 6) * 5;
 			strMAns += to_string(SIZ) + "/" + to_string(SIZ / 2) + "/" + to_string(SIZ / 5);
 			strMAns += '\n';
 			strMAns += "敏捷DEX=3D6*5=";
@@ -226,8 +226,8 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t sendTime, int64_t
 			int INT = (RollDice("2D6") + 6) * 5;
 			strMAns += to_string(INT) + "/" + to_string(INT / 2) + "/" + to_string(INT / 5);
 			strMAns += '\n';
-			strMAns += "意志POW=(2D6+6)*5=";
-			int POW = (RollDice("2D6") + 6) * 5;
+			strMAns += "意志POW=3D6*5=";
+			int POW = RollDice("3D6") * 5;
 			strMAns += to_string(POW) + "/" + to_string(POW / 2) + "/" + to_string(POW / 5);
 			strMAns += '\n';
 			strMAns += "教育EDU=(2D6+6)*5=";
@@ -432,8 +432,8 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t sendTime, int64
 			int CON = RollDice("3D6") * 5;
 			strMAns += to_string(CON) + "/" + to_string(CON / 2) + "/" + to_string(CON / 5);
 			strMAns += '\n';
-			strMAns += "体型SIZ=3D6*5=";
-			int SIZ = RollDice("3D6") * 5;
+			strMAns += "体型SIZ=(2D6+6)*5=";
+			int SIZ = (RollDice("2D6") + 6) * 5;
 			strMAns += to_string(SIZ) + "/" + to_string(SIZ / 2) + "/" + to_string(SIZ / 5);
 			strMAns += '\n';
 			strMAns += "敏捷DEX=3D6*5=";
@@ -448,8 +448,8 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t sendTime, int64
 			int INT = (RollDice("2D6") + 6) * 5;
 			strMAns += to_string(INT) + "/" + to_string(INT / 2) + "/" + to_string(INT / 5);
 			strMAns += '\n';
-			strMAns += "意志POW=(2D6+6)*5=";
-			int POW = (RollDice("2D6") + 6) * 5;
+			strMAns += "意志POW=3D6*5=";
+			int POW = RollDice("3D6") * 5;
 			strMAns += to_string(POW) + "/" + to_string(POW / 2) + "/" + to_string(POW / 5);
 			strMAns += '\n';
 			strMAns += "教育EDU=(2D6+6)*5=";
