@@ -1,4 +1,4 @@
- # Dice-of-COC Version 1.2.2
+ # Dice-of-COC Version 1.2.3
 
 这是一个酷Q机器人插件(website:cqp.cc),适用于QQ跑团掷骰，目前支持命令如下
 
