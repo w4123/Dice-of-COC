@@ -1,4 +1,4 @@
-    # Dice-of-COC Version 1.3.5
+# Dice-of-COC Version 1.3.5
 
 COC跑团用骰子，开源，使用VC++2017编写
 
