@@ -1,4 +1,4 @@
- # Dice-of-COC Version 1.3.5
+    # Dice-of-COC Version 1.3.5
 
 COC跑团用骰子，开源，使用VC++2017编写
 
@@ -18,6 +18,7 @@ COC跑团用骰子，开源，使用VC++2017编写
 
 有问题请联系QQ1840686745(或者直接提issue) 希望大家能够支持，谢谢
 
-PS:未安装VC++2017运行库程序将报错(-103),微软官方下载地址：64位:https://aka.ms/vs/15/release/VC_redist.x64.exe，32位: https://aka.ms/vs/15/release/VC_redist.x86.exe
+PS:未安装VC++2017运行库程序将报错(-103),微软官方下载地址：64位:https://aka.ms/vs/15/release/VC_redist.x64.exe 
+32位: https://aka.ms/vs/15/release/VC_redist.x86.exe
 
 PPS:最近有人反馈在群中收不到骰子的问题，经检查应该是由于小号是新建的，并且短时间发送了大量信息，所以被腾讯误认为是广告之类的给拦截了，此问题暂时无解，可以换老一点了小号或者是将你的机器人小号闲置一段时间便可以恢复正常
