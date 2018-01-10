@@ -139,7 +139,7 @@ Unpack& Unpack::add(unsigned char* i, short len)
 std::vector<unsigned char> Unpack::getchars()
 {
 	auto len = getshort();
-	if (buff.size() < len)return vector<unsigned char>();
+	if (buff.size() < static_cast<size_t>(len))return vector<unsigned char>();
 
 	auto tep = vector<unsigned char>(buff.begin(), buff.begin() + len);
 	buff.erase(buff.begin(), buff.begin() + len);
