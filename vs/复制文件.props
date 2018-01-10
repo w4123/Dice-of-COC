@@ -8,7 +8,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <PostBuildEvent>
-      <Command>echo 正在执行自定义命令 &amp;&amp; set url="$(ProjectName)-$(Configuration)\$(ProjectName).lib" &amp;&amp; set tourl="$(SolutionDir)..\res\SDK_$(Configuration).lib" &amp;&amp; echo 复制 $(ProjectName).lib -^&gt; \res\SDK_$(Configuration).lib &amp;&amp; copy %url% %tourl% &gt;nul &amp;&amp; echo 自定义命令执行完成 </Command>
+      <Command>echo 正在执行自定义命令 &amp;&amp; set url="$(SolutionDir)$(ProjectName)-$(Configuration)\$(ProjectName).lib" &amp;&amp; cd /d $(SolutionDir) &amp;&amp; cd.. &amp;&amp; set tourl="res\SDK_$(Configuration).lib" &amp;&amp; echo 复制 $(ProjectName).lib -^&gt; \res\SDK_$(Configuration).lib &amp;&amp; copy %url% %tourl%  &amp;&amp; echo 自定义命令执行完成 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup />

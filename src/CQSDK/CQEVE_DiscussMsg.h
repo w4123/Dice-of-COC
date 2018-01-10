@@ -19,9 +19,9 @@ font		×ÖÌå
 */
 #define EVE_DiscussMsg_EX(Name)																	\
 	void Name(CQ::EVEDiscussMsg & eve);															\
-	EVE_PrivateMsg(Name)																		\
+	EVE_DiscussMsg(Name)																		\
 	{																							\
-		CQ::EVEDiscussMsg tep(subType, msgId, fromDiscuss, fromQQ, msg, Font);				\
+		CQ::EVEDiscussMsg tep(subType, msgId, fromDiscuss, fromQQ, msg, font);				\
 		Name(tep);																				\
 		return tep._EVEret;																		\
 	}																							\
