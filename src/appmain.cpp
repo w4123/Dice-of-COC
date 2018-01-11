@@ -18,66 +18,72 @@ set<long long> DisabledGroup;
 set<long long> DisabledDiscuss;
 
 static string strFileLoc;
-static string strTooManyTimesNotice = "æ·éª°å¤±è´¥!æ·éª°æ¬¡æ•°è¶…è¿‡äº†æœ€å¤§é™åˆ¶10æ¬¡!";
+static string strTooManyTimesNotice = "ÖÀ÷»Ê§°Ü!ÖÀ÷»´ÎÊı³¬¹ıÁË×î´óÏŞÖÆ10´Î!";
 //Help Message
 static string strHlpMsg = 
-R"(ä¸‹é¢åˆ—å‡ºäº†æœ¬æœºå™¨äººçš„å…¨éƒ¨å‘½ä»¤(ä½¿ç”¨".help å‘½ä»¤"è·å–è¯¥å‘½ä»¤çš„è¯¦ç»†ä¿¡æ¯):
-	.o/r/rd éª°å­ç±»å‹/å‘½ä»¤ [åŸå› ]   æ™®é€šæ·éª°
-	.h/rh éª°å­ç±»å‹/å‘½ä»¤ [åŸå› ]     æš—éª°
-	.sn [åç§°]                         è®¾ç½®/åˆ é™¤åç§°
-	.dn		                        åˆ é™¤åç§°
-	.on [QQå·]                       å¼€å¯éª°å­
-	.off [QQå·]                       å…³é—­éª°å­
-	.st [QQå·]                         æŸ¥çœ‹éª°å­å¼€å¯çŠ¶æ€
-	.me ç¾¤å·(ä»…ç§èŠ) åŠ¨ä½œ	   ä»¥ç¬¬ä¸‰æ–¹è§†è§’åšå‡ºåŠ¨ä½œ
-	.help [å‘½ä»¤]	                  è·å–å¸®åŠ©
-æ·éª°ä¸­çš„å‘½ä»¤:
-	.o/r/rd/h/rh COC6       COC6ç‰ˆäººç‰©ä½œæˆ
-	.o/r/rd/h/rh COC7       COC7ç‰ˆäººç‰©ä½œæˆ
-	.o/r/rd/h/rh DND        DNDè‹±é›„åšæˆ
-	.o/r/rd/h/rh Bx         D100å¥–åŠ±éª°(xä¸ºå¥–åŠ±éª°ä¸ªæ•°,å¦‚.o B2,Bä¸xä¹‹é—´æ— ç©ºæ ¼)
-	.o/r/rd/h/rh Px         D100æƒ©ç½šéª°(xä¸ºæƒ©ç½šéª°ä¸ªæ•°,å¦‚.o B2,Pä¸xä¹‹é—´æ— ç©ºæ ¼)
-æ³¨:å¼ºçƒˆå»ºè®®è¾“å…¥å‘½ä»¤æ—¶ä¸è¦çœç•¥ç©ºæ ¼,è™½ç„¶æœ¬æ’ä»¶å¯ä»¥åœ¨æŸç§ç¨‹åº¦ä¸Šè¯†åˆ«ä¸åŠ ç©ºæ ¼çš„å‘½ä»¤,ä½†ä¹Ÿæœ‰ä¸€å®šå‡ ç‡ä¼šå‘ç”Ÿé”™è¯¯
-ç‰ˆæœ¬:1.5.1
-é—®é¢˜åé¦ˆ/äº¤æµç¾¤624807593)";
+R"(ÏÂÃæÁĞ³öÁË±¾»úÆ÷ÈËµÄÈ«²¿ÃüÁî(Ê¹ÓÃ".help ÃüÁî"»ñÈ¡¸ÃÃüÁîµÄÏêÏ¸ĞÅÏ¢):
+	.o/r/d/rd ÷»×ÓÀàĞÍ/ÃüÁî [Ô­Òò]   ÆÕÍ¨ÖÀ÷»
+	.h/rh ÷»×ÓÀàĞÍ/ÃüÁî [Ô­Òò]     °µ÷»
+	.sn [Ãû³Æ]                         ÉèÖÃ/É¾³ıÃû³Æ
+	.dn		                        É¾³ıÃû³Æ
+	.on [QQºÅ]                       ¿ªÆô÷»×Ó
+	.off [QQºÅ]                       ¹Ø±Õ÷»×Ó
+	.st [QQºÅ]                         ²é¿´÷»×Ó¿ªÆô×´Ì¬
+	.me ÈººÅ(½öË½ÁÄ) ¶¯×÷	   ÒÔµÚÈı·½ÊÓ½Ç×ö³ö¶¯×÷
+	.sc Ëù¿ÛSanÖµ µ±Ç°SanÖµ     ×Ô¶¯Sancheck,Ëù¿ÛSanÖµµÄ¸ñÊ½ÊÇ"Sancheck³É¹¦¿ÛµÄµãÊı/SancheckÊ§°Ü¿ÛµÄµãÊı"
+	.help [ÃüÁî]	                  »ñÈ¡°ïÖú
+ÖÀ÷»ÖĞµÄÃüÁî:
+	.o/r/d/rd/h/rh COC6       COC6°æÈËÎï×÷³É
+	.o/r/d/rd/h/rh COC7       COC7°æÈËÎï×÷³É
+	.o/r/d/rd/h/rh DND        DNDÓ¢ĞÛ×ö³É
+	.o/r/d/rd/h/rh Bx         D100½±Àø÷»(xÎª½±Àø÷»¸öÊı,Èç.o B2,BÓëxÖ®¼äÎŞ¿Õ¸ñ)
+	.o/r/d/rd/h/rh Px         D100³Í·£÷»(xÎª³Í·£÷»¸öÊı,Èç.o B2,PÓëxÖ®¼äÎŞ¿Õ¸ñ)
+×¢:Ç¿ÁÒ½¨ÒéÊäÈëÃüÁîÊ±²»ÒªÊ¡ÂÔ¿Õ¸ñ,ËäÈ»±¾²å¼ş¿ÉÒÔÔÚÄ³ÖÖ³Ì¶ÈÉÏÊ¶±ğ²»¼Ó¿Õ¸ñµÄÃüÁî,µ«Ò²ÓĞÒ»¶¨¼¸ÂÊ»á·¢Éú´íÎó
+°æ±¾:1.5.2
+ÎÊÌâ·´À¡/½»Á÷Èº624807593)";
 
-static string strNormalDiceMsg = R"(æ™®é€šæ·éª°:
-	.o/r/rd éª°å­ç±»å‹ [åŸå› ]
-è¿™æ˜¯æœ¬æœºå™¨äººæœ€åŸºæœ¬çš„åŠŸèƒ½,åœ¨éª°å­ç±»å‹ä¸­å¯ä»¥è¯†åˆ«å„ç±»åŠ å‡ç¬¦å·,å¹¶ä¸”æ”¯æŒä½¿ç”¨#è¿›è¡Œå¤šè½®æ·éª°,ä½¿ç”¨æ–¹æ³•ä¸ºä¸ªæ•°#éª°å­ç±»å‹
-å¦‚:.o 1d3#1d6-2d2+3å°±æ˜¯éª°äº†1d3æ¬¡çš„1d6-2d2+3)";
+static string strNormalDiceMsg = R"(ÆÕÍ¨ÖÀ÷»:
+	.o/r/rd ÷»×ÓÀàĞÍ [Ô­Òò]
+ÕâÊÇ±¾»úÆ÷ÈË×î»ù±¾µÄ¹¦ÄÜ,ÔÚ÷»×ÓÀàĞÍÖĞ¿ÉÒÔÊ¶±ğ¸÷Àà¼Ó¼õ·ûºÅ,²¢ÇÒÖ§³ÖÊ¹ÓÃ#½øĞĞ¶àÂÖÖÀ÷»,Ê¹ÓÃ·½·¨Îª¸öÊı#÷»×ÓÀàĞÍ
+Èç:.o 1d3#1d6-2d2+3¾ÍÊÇ÷»ÁË1d3´ÎµÄ1d6-2d2+3)";
 
-static string strHiddenDiceMsg = R"(æš—éª°:
-	.h/rh éª°å­ç±»å‹ [åŸå› ]
-æš—éª°åªåœ¨ç¾¤/å¤šäººèŠå¤©ä¸­æœ‰æ•ˆ,ç»“æœä¼šç§èŠç»™æŒ‡æ·éª°äºº,å¹¶åœ¨ç¾¤/å¤šäººèŠå¤©ä¸­å‘å‡ºæš—éª°é€šçŸ¥,å…¶ä¸­æ”¯æŒçš„éª°å­ç±»å‹ä¸æ™®é€šéª°å­ç›¸åŒ)";
+static string strHiddenDiceMsg = R"(°µ÷»:
+	.h/rh ÷»×ÓÀàĞÍ [Ô­Òò]
+°µ÷»Ö»ÔÚÈº/¶àÈËÁÄÌìÖĞÓĞĞ§,½á¹û»áË½ÁÄ¸øÖ¸ÖÀ÷»ÈË,²¢ÔÚÈº/¶àÈËÁÄÌìÖĞ·¢³ö°µ÷»Í¨Öª,ÆäÖĞÖ§³ÖµÄ÷»×ÓÀàĞÍÓëÆÕÍ¨÷»×ÓÏàÍ¬)";
 
-static string strSNMsg = R"(è®¾ç½®/åˆ é™¤åç§°:
-	.sn [åç§°]
-æ­¤å‘½ä»¤åªåœ¨ç¾¤/å¤šäººèŠå¤©ä¸­æœ‰æ•ˆ,é€šè¿‡æ­¤æ¡å‘½ä»¤å¯ä»¥æ”¹å˜æœºå™¨äººå¯¹ä½ çš„ç§°å‘¼,å·²ä½¿ç”¨æ­¤å‘½ä»¤è®¾ç½®è¿‡åç§°åˆ™ä¼šå°†å…¶è¦†ç›–,å¦‚æœåç§°ä¸ºç©ºåˆ™ä¸dnå‘½ä»¤ç›¸åŒä¸ºåˆ é™¤åç§°,ç§°å‘¼ä¼˜å…ˆçº§ä¸ºsnè®¾ç½®çš„ç§°å‘¼>ç¾¤åç‰‡>æ˜µç§°)";
+static string strSNMsg = R"(ÉèÖÃ/É¾³ıÃû³Æ:
+	.sn [Ãû³Æ]
+´ËÃüÁîÖ»ÔÚÈº/¶àÈËÁÄÌìÖĞÓĞĞ§,Í¨¹ı´ËÌõÃüÁî¿ÉÒÔ¸Ä±ä»úÆ÷ÈË¶ÔÄãµÄ³Æºô,ÒÑÊ¹ÓÃ´ËÃüÁîÉèÖÃ¹ıÃû³ÆÔò»á½«Æä¸²¸Ç,Èç¹ûÃû³ÆÎª¿ÕÔòÓëdnÃüÁîÏàÍ¬ÎªÉ¾³ıÃû³Æ,³ÆºôÓÅÏÈ¼¶ÎªsnÉèÖÃµÄ³Æºô>ÈºÃûÆ¬>êÇ³Æ)";
 
-static string strDNMsg = R"(åˆ é™¤åç§°:
+static string strDNMsg = R"(É¾³ıÃû³Æ:
 	.dn
-æ­¤å‘½ä»¤åªåœ¨ç¾¤/å¤šäººèŠå¤©ä¸­æœ‰æ•ˆ,é€šè¿‡æ­¤æ¡å‘½ä»¤å¯ä»¥åˆ é™¤snå‘½ä»¤è®¾ç½®çš„ç§°å‘¼,æ¢å¤åˆ°å…¶ä»–å¯ç”¨çš„ç§°å‘¼,ç§°å‘¼ä¼˜å…ˆçº§ä¸ºsnè®¾ç½®çš„ç§°å‘¼>ç¾¤åç‰‡>æ˜µç§°)";
+´ËÃüÁîÖ»ÔÚÈº/¶àÈËÁÄÌìÖĞÓĞĞ§,Í¨¹ı´ËÌõÃüÁî¿ÉÒÔÉ¾³ısnÃüÁîÉèÖÃµÄ³Æºô,»Ö¸´µ½ÆäËû¿ÉÓÃµÄ³Æºô,³ÆºôÓÅÏÈ¼¶ÎªsnÉèÖÃµÄ³Æºô>ÈºÃûÆ¬>êÇ³Æ)";
 
-static string strONMsg = R"(å¼€å¯éª°å­:
-	.on [QQå·]
-æ­¤å‘½ä»¤æ˜¯ä¸ºäº†åœ¨ç¾¤ä¸­æœ‰å¤šä¸ªæœºå™¨äººçš„æƒ…å†µè€Œå‡†å¤‡çš„,æ‰€ä»¥æ­¤å‘½ä»¤åªåœ¨ç¾¤/å¤šäººèŠå¤©ä¸­æœ‰æ•ˆ,æ­¤å¤–,åœ¨ç¾¤ä¸­æœ¬å‘½ä»¤éœ€è¦ç®¡ç†å‘˜/ç¾¤ä¸»æƒé™ã€‚è¾“å…¥QQå·åˆ™åªå¼€å¯å¯¹åº”QQå·çš„æœºå™¨äºº,ä¸è¾“å…¥åˆ™å¯¹æ‰€æœ‰æœºå™¨äººæœ‰æ•ˆ)";
+static string strONMsg = R"(¿ªÆô÷»×Ó:
+	.on [QQºÅ]
+´ËÃüÁîÊÇÎªÁËÔÚÈºÖĞÓĞ¶à¸ö»úÆ÷ÈËµÄÇé¿ö¶ø×¼±¸µÄ,ËùÒÔ´ËÃüÁîÖ»ÔÚÈº/¶àÈËÁÄÌìÖĞÓĞĞ§,´ËÍâ,ÔÚÈºÖĞ±¾ÃüÁîĞèÒª¹ÜÀíÔ±/ÈºÖ÷È¨ÏŞ¡£ÊäÈëQQºÅÔòÖ»¿ªÆô¶ÔÓ¦QQºÅµÄ»úÆ÷ÈË,²»ÊäÈëÔò¶ÔËùÓĞ»úÆ÷ÈËÓĞĞ§)";
 
-static string strOFFMsg = R"(å…³é—­éª°å­:
-	.on [QQå·]
-æ­¤å‘½ä»¤æ˜¯ä¸ºäº†åœ¨ç¾¤ä¸­æœ‰å¤šä¸ªæœºå™¨äººçš„æƒ…å†µè€Œå‡†å¤‡çš„,æ‰€ä»¥æ­¤å‘½ä»¤åªåœ¨ç¾¤/å¤šäººèŠå¤©ä¸­æœ‰æ•ˆ,æ­¤å¤–,åœ¨ç¾¤ä¸­æœ¬å‘½ä»¤éœ€è¦ç®¡ç†å‘˜/ç¾¤ä¸»æƒé™ã€‚è¾“å…¥QQå·åˆ™åªå…³é—­å¯¹åº”QQå·çš„æœºå™¨äºº,ä¸è¾“å…¥åˆ™å¯¹æ‰€æœ‰æœºå™¨äººæœ‰æ•ˆ)";
+static string strOFFMsg = R"(¹Ø±Õ÷»×Ó:
+	.on [QQºÅ]
+´ËÃüÁîÊÇÎªÁËÔÚÈºÖĞÓĞ¶à¸ö»úÆ÷ÈËµÄÇé¿ö¶ø×¼±¸µÄ,ËùÒÔ´ËÃüÁîÖ»ÔÚÈº/¶àÈËÁÄÌìÖĞÓĞĞ§,´ËÍâ,ÔÚÈºÖĞ±¾ÃüÁîĞèÒª¹ÜÀíÔ±/ÈºÖ÷È¨ÏŞ¡£ÊäÈëQQºÅÔòÖ»¹Ø±Õ¶ÔÓ¦QQºÅµÄ»úÆ÷ÈË,²»ÊäÈëÔò¶ÔËùÓĞ»úÆ÷ÈËÓĞĞ§)";
 
-static string strSTMsg = R"(æŸ¥çœ‹éª°å­å¼€å¯çŠ¶æ€:
-	.st [QQå·]
-æ­¤å‘½ä»¤æ˜¯ä¸ºäº†åœ¨ç¾¤ä¸­æœ‰å¤šä¸ªæœºå™¨äººçš„æƒ…å†µè€Œå‡†å¤‡çš„,æ‰€ä»¥æ­¤å‘½ä»¤åªåœ¨ç¾¤/å¤šäººèŠå¤©ä¸­æœ‰æ•ˆã€‚è¾“å…¥QQå·åˆ™åªæŸ¥çœ‹å¯¹åº”QQå·çš„æœºå™¨äººçŠ¶æ€,ä¸è¾“å…¥åˆ™å¯¹æ‰€æœ‰æœºå™¨äººæœ‰æ•ˆ)";
+static string strSTMsg = R"(²é¿´÷»×Ó¿ªÆô×´Ì¬:
+	.st [QQºÅ]
+´ËÃüÁîÊÇÎªÁËÔÚÈºÖĞÓĞ¶à¸ö»úÆ÷ÈËµÄÇé¿ö¶ø×¼±¸µÄ,ËùÒÔ´ËÃüÁîÖ»ÔÚÈº/¶àÈËÁÄÌìÖĞÓĞĞ§¡£ÊäÈëQQºÅÔòÖ»²é¿´¶ÔÓ¦QQºÅµÄ»úÆ÷ÈË×´Ì¬,²»ÊäÈëÔò¶ÔËùÓĞ»úÆ÷ÈËÓĞĞ§)";
 
-static string strMEMsg = R"(ä»¥ç¬¬ä¸‰æ–¹è§†è§’åšå‡ºåŠ¨ä½œ:
-	ç¾¤å·(ä»…ç§èŠ) åŠ¨ä½œ
-åœ¨ç¾¤/å¤šäººèŠå¤©ä¸­ä½¿ç”¨çš„æ—¶å€™å‘½ä»¤ä¸º.me åŠ¨ä½œ,æœºå™¨äººä¼šä»¥ç¬¬ä¸‰æ–¹çš„è§†è§’é‡å¤æè¿°è¿™ä¸€åŠ¨ä½œä»¥å¢åŠ æ¸¸æˆä»£å…¥æ„Ÿ,ä¸ºé˜²æ­¢è¾“å…¥å‘½ä»¤ç ´ç¯æ¸¸æˆæ„Ÿ,ä¹Ÿå¯ä»¥ä½¿ç”¨ç§èŠå‘½ä»¤.me ç¾¤å· åŠ¨ä½œ,æœºå™¨äººä¼šç›´æ¥å°†æ­¤åŠ¨ä½œå‘é€åˆ°æŒ‡å®šçš„ç¾¤ä¸­(ç§èŠmeå‘½ä»¤ä¸æ”¯æŒå¤šäººèŠå¤©))";
+static string strMEMsg = R"(ÒÔµÚÈı·½ÊÓ½Ç×ö³ö¶¯×÷:
+	ÈººÅ(½öË½ÁÄ) ¶¯×÷
+ÔÚÈº/¶àÈËÁÄÌìÖĞÊ¹ÓÃµÄÊ±ºòÃüÁîÎª.me ¶¯×÷,»úÆ÷ÈË»áÒÔµÚÈı·½µÄÊÓ½ÇÖØ¸´ÃèÊöÕâÒ»¶¯×÷ÒÔÔö¼ÓÓÎÏ·´úÈë¸Ğ,Îª·ÀÖ¹ÊäÈëÃüÁîÆÆ»·ÓÎÏ·¸Ğ,Ò²¿ÉÒÔÊ¹ÓÃË½ÁÄÃüÁî.me ÈººÅ ¶¯×÷,»úÆ÷ÈË»áÖ±½Ó½«´Ë¶¯×÷·¢ËÍµ½Ö¸¶¨µÄÈºÖĞ(Ë½ÁÄmeÃüÁî²»Ö§³Ö¶àÈËÁÄÌì))";
 
-static string strHMsg = R"(ä»€ä¹ˆ?ä¸€ä¸ªå¸®åŠ©ä½ è¿˜è¦æ¥é—®?)";
+static string strSCMsg = R"(Sancheck:
+	.sc Ëù¿ÛSanÖµ µ±Ç°SanÖµ
+´ËÃüÁîÎª×Ô¶¯SancheckÃüÁî,ÆäÖĞËù¿ÛSanÖµµÄ¸ñÊ½ÊÇ"Sancheck³É¹¦¿ÛµÄµãÊı/SancheckÊ§°Ü¿ÛµÄµãÊı",Èç:.sc 1/1d6 60
+´ËÃüÁî»áÏÈÍ¶ÖÀ1d100ÓëSan±È½Ï,Èç¹û³É¹¦SanÖµ±ã¿Û³ı"/"Ç°ÃæµÄµãÊı,·ñÔò¿Û³ı"/"ºóÃæµÄµãÊı,×îºó½«Õû¸öÁ÷³ÌÒÔ¼°µ±Ç°SanÖµÊä³ö")";
+
+static string strHMsg = R"(Ê²Ã´?Ò»¸ö°ïÖúÄã»¹ÒªÀ´ÎÊ?)";
 
 //Error Message
-static string strErrMsg = "è¾“å…¥é”™è¯¯!è¾“å…¥.helpæˆ–.å¸®åŠ©æ¥è·å¾—å¸®åŠ©!";
+static string strErrMsg = "ÊäÈë´íÎó!ÊäÈë.help»ò.°ïÖúÀ´»ñµÃ°ïÖú!";
 
 long long Str2Int(const string a) {
 	stringstream ConvertStream;
@@ -149,8 +155,8 @@ EVE_GroupMsg_EX(groupMsg) {
 	
 	//Skip the space
 	while (eve.message[0] == ' ')eve.message.erase(eve.message.begin());
-
-	if (eve.message.find("ã€‚") == 0) {
+	while (eve.message[eve.message.length()-1] == ' ')eve.message.erase(eve.message.end()-1);
+	if (eve.message.find("¡£") == 0) {
 		eve.message.erase(eve.message.begin());
 		eve.message[0] = '.';
 	}
@@ -161,9 +167,10 @@ EVE_GroupMsg_EX(groupMsg) {
 	//Use the string to save the second part of the Input
 	string strSecondInput;
 
-	//Replace the "ã€‚" in the front to "."
+	//Replace the "¡£" in the front to "."
 	if (strFirstInput[0] != '.')return;
 
+	if (eve.message == "." || strFirstInput[1] == '.' || strFirstInput.find("¡£") == 1)return;
 	for (int k = 0; k != strFirstInput.length(); k++) {
 		if (isdigit(strFirstInput[k])) {
 			strSecondInput += strFirstInput.substr(k);
@@ -181,7 +188,7 @@ EVE_GroupMsg_EX(groupMsg) {
 			break;
 		}
 	}
-
+	if (strFirstInput == ".")strFirstInput = ".rd";
 	//Save the GroupNick. if the GroupNick is empty, save the Nickname
 	string strNickName = GroupName.count(pairQQGroup) ? GroupName[pairQQGroup] : getGroupMemberInfo(eve.fromGroup, eve.fromQQ).GroupNickname.empty() ? getStrangerInfo(eve.fromQQ).nick : getGroupMemberInfo(eve.fromGroup, eve.fromQQ).GroupNickname;
 	
@@ -189,13 +196,13 @@ EVE_GroupMsg_EX(groupMsg) {
 	for (auto &i : strFirstInput)if (isupper(i))i = tolower(i);
 	
 	//Judge if it is a command
-	if ((strFirstInput==".o" || strFirstInput==".h" || strFirstInput == ".rd"|| strFirstInput==".r"||strFirstInput==".rh" )&&!DisabledGroup.count(eve.fromGroup)) {
+	if ((strFirstInput==".o" || strFirstInput==".h" || strFirstInput == ".rd"|| strFirstInput==".r"||strFirstInput==".rh" || strFirstInput == ".d")&&!DisabledGroup.count(eve.fromGroup)) {
 		
 		//Save the group name
 		string strGroupName = getGroupList()[eve.fromGroup];
 
 		//Use it to save the HiddenDice Notice
-		string strHiddenNotice = strNickName + "è¿›è¡Œäº†ä¸€æ¬¡æš—éª°";
+		string strHiddenNotice = strNickName + "½øĞĞÁËÒ»´Î°µ÷»";
 
 		//Use it to save the count of the Msg have read
 		int intMsgCnt = eve.message.find(" ") == string::npos ? eve.message.length() : eve.message.find(" ");
@@ -237,7 +244,7 @@ EVE_GroupMsg_EX(groupMsg) {
 		//If the input contains # and the input before # is dice, send a roll-dice-time notice
 		if (strSecondInput.find("#") != string::npos && (strSecondInput.substr(0, strSecondInput.find("#")).find("d") != string::npos || strSecondInput.substr(0, strSecondInput.find("#")).find("D") != string::npos)) {
 			string strRollDiceTurnNotice;
-			strRollDiceTurnNotice += "æ·éª°æ¬¡æ•°: " + strSecondInput.substr(0, strSecondInput.find("#")) + "=" + to_string(intRollDiceTime) + "è½®";
+			strRollDiceTurnNotice += "ÖÀ÷»´ÎÊı: " + strSecondInput.substr(0, strSecondInput.find("#")) + "=" + to_string(intRollDiceTime) + "ÂÖ";
 			if (isHidden)sendPrivateMsg(eve.fromQQ, strRollDiceTurnNotice);else
 			sendGroupMsg(eve.fromGroup, strRollDiceTurnNotice);
 		}
@@ -255,7 +262,7 @@ EVE_GroupMsg_EX(groupMsg) {
 		for (int i = 0; i <= erase_cnt; ++i) strSecondInputCopy.erase(strSecondInputCopy.begin());
 		//Roll the dice
 		for (int w = 0; w != intRollDiceTime; ++w) {
-			if (strSecondInput == "äººç‰©ä½œæˆ"|| strSecondInput == "äººç‰©åšæˆ"|| strSecondInput == "äººç‰©åˆ¶ä½œ"|| strSecondInput == "ä¸ƒç‰ˆäººç‰©ä½œæˆ" || strSecondInput == "ä¸ƒç‰ˆäººç‰©åšæˆ" || strSecondInput == "ä¸ƒç‰ˆäººç‰©åˆ¶ä½œ" || strSecondInput == "COC" || strSecondInput == "COC7") {
+			if (strSecondInput == "ÈËÎï×÷³É"|| strSecondInput == "ÈËÎï×ö³É"|| strSecondInput == "ÈËÎïÖÆ×÷"|| strSecondInput == "Æß°æÈËÎï×÷³É" || strSecondInput == "Æß°æÈËÎï×ö³É" || strSecondInput == "Æß°æÈËÎïÖÆ×÷" || strSecondInput == "COC" || strSecondInput == "COC7") {
 				//COC7
 
 				//Save the result of COC7
@@ -266,13 +273,13 @@ EVE_GroupMsg_EX(groupMsg) {
 
 				//If is hidden, send a private msg instead of a group one
 				if (isHidden) {
-					strMAns = "åœ¨ç¾¤" + strGroupName + "ä¸­" + strMAns;
+					strMAns = "ÔÚÈº" + strGroupName + "ÖĞ" + strMAns;
 					sendPrivateMsg(eve.fromQQ, strMAns);
 				}
 				else
 				sendGroupMsg(eve.fromGroup, strMAns);
 			}
-			else if (strSecondInput == "å…­ç‰ˆäººç‰©ä½œæˆ"|| strSecondInput == "å…­ç‰ˆäººç‰©åšæˆ" || strSecondInput == "å…­ç‰ˆäººç‰©åˆ¶ä½œ" || strSecondInput == "COC6") {
+			else if (strSecondInput == "Áù°æÈËÎï×÷³É"|| strSecondInput == "Áù°æÈËÎï×ö³É" || strSecondInput == "Áù°æÈËÎïÖÆ×÷" || strSecondInput == "COC6") {
 				//COC6
 
 				//Save the result of COC6
@@ -283,24 +290,24 @@ EVE_GroupMsg_EX(groupMsg) {
 
 				//If is hidden, send a private msg instead of a group one
 				if (isHidden) {
-					strMAns = "åœ¨ç¾¤" + strGroupName + "ä¸­" + strMAns;
+					strMAns = "ÔÚÈº" + strGroupName + "ÖĞ" + strMAns;
 					sendPrivateMsg(eve.fromQQ, strMAns);
 				}
 				else
 				sendGroupMsg(eve.fromGroup, strMAns);
 			}
-			else if (strSecondInput=="DND"||strSecondInput=="è‹±é›„ä½œæˆ"||strSecondInput=="è‹±é›„åšæˆ"||strSecondInput=="è‹±é›„åˆ¶ä½œ") {
+			else if (strSecondInput=="DND"||strSecondInput=="Ó¢ĞÛ×÷³É"||strSecondInput=="Ó¢ĞÛ×ö³É"||strSecondInput=="Ó¢ĞÛÖÆ×÷") {
 				//DND
 				
 				//Save the result of DND
-				string strMAns = strNickName + "çš„è‹±é›„åšæˆ:\n";
+				string strMAns = strNickName + "µÄÓ¢ĞÛ×ö³É:\n";
 
 				//Call the DND roll dice function
 				DND(strMAns);
 
 				//If is hidden, send a private msg instead of a group one
 				if (isHidden) {
-					strMAns = "åœ¨ç¾¤" + strGroupName + "ä¸­" + strMAns;
+					strMAns = "ÔÚÈº" + strGroupName + "ÖĞ" + strMAns;
 					sendPrivateMsg(eve.fromQQ, strMAns);
 				}
 				else
@@ -317,14 +324,14 @@ EVE_GroupMsg_EX(groupMsg) {
 				}
 				int intBonusNum = Str2Int(strBonusNum);
 				if (intBonusNum <= 0) {
-					sendGroupMsg(eve.fromGroup, "å¥–åŠ±éª°ä¸ªæ•°é”™è¯¯!");
+					sendGroupMsg(eve.fromGroup, "½±Àø÷»¸öÊı´íÎó!");
 					eve.message_block();
 					return;
 				}
 				int D100res = 0;
 				MainRoll(D100res, "D100");
 				int MinVal = 10;
-				string strAns = strNickName + "éª°å‡ºäº†:\nD100=" + to_string(D100res) + "\nå¥–åŠ±éª°:";
+				string strAns = strNickName + "÷»³öÁË:\nD100=" + to_string(D100res) + "\n½±Àø÷»:";
 				for (int i = 1; i <= intBonusNum; i++) {
 					Sleep(1);
 					int D10res = -!!(D100res % 10);
@@ -333,14 +340,14 @@ EVE_GroupMsg_EX(groupMsg) {
 					strAns += to_string(D10res) + " ";
 				}
 				strAns[strAns.length() - 1] = '\n';
-				strAns += "ç»“æœä¸º:" + to_string((D100res / 10 < MinVal ? D100res / 10 : MinVal) * 10 + D100res % 10);
+				strAns += "½á¹ûÎª:" + to_string((D100res / 10 < MinVal ? D100res / 10 : MinVal) * 10 + D100res % 10);
 				if (intMsgCnt != eve.message.length())strReason = eve.message.substr(intMsgCnt);
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "ç”±äº" + strReason + strAns;
+					strAns = "ÓÉÓÚ" + strReason + strAns;
 				}
 				if (isHidden) {
-					strAns = "åœ¨ç¾¤" + strGroupName + "ä¸­" + strAns;
+					strAns = "ÔÚÈº" + strGroupName + "ÖĞ" + strAns;
 					sendPrivateMsg(eve.fromQQ, strAns);
 				}
 				else
@@ -358,14 +365,14 @@ EVE_GroupMsg_EX(groupMsg) {
 				}
 				int intBonusNum = Str2Int(strBonusNum);
 				if (intBonusNum <= 0) {
-					sendGroupMsg(eve.fromGroup, "æƒ©ç½šéª°ä¸ªæ•°é”™è¯¯!");
+					sendGroupMsg(eve.fromGroup, "³Í·£÷»¸öÊı´íÎó!");
 					eve.message_block();
 					return;
 				}
 				int D100res = 0;
 				MainRoll(D100res, "D100");
 				int MaxVal = 0;
-				string strAns = strNickName + "éª°å‡ºäº†:\nD100=" + to_string(D100res) + "\næƒ©ç½šéª°:";
+				string strAns = strNickName + "÷»³öÁË:\nD100=" + to_string(D100res) + "\n³Í·£÷»:";
 				for (int i = 1; i <= intBonusNum; i++) {
 					Sleep(1);
 					int D10res = -!!(D100res % 10);
@@ -374,14 +381,14 @@ EVE_GroupMsg_EX(groupMsg) {
 					strAns += to_string(D10res) + " ";
 				}
 				strAns[strAns.length() - 1] = '\n';
-				strAns += "ç»“æœä¸º:" + to_string((D100res / 10 > MaxVal ? D100res / 10 : MaxVal) * 10 + D100res % 10);
+				strAns += "½á¹ûÎª:" + to_string((D100res / 10 > MaxVal ? D100res / 10 : MaxVal) * 10 + D100res % 10);
 				if (intMsgCnt != eve.message.length())strReason = eve.message.substr(intMsgCnt);
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "ç”±äº" + strReason + strAns;
+					strAns = "ÓÉÓÚ" + strReason + strAns;
 				}
 				if (isHidden) {
-					strAns = "åœ¨ç¾¤" + strGroupName + "ä¸­" + strAns;
+					strAns = "ÔÚÈº" + strGroupName + "ÖĞ" + strAns;
 					sendPrivateMsg(eve.fromQQ, strAns);
 				}
 				else
@@ -401,7 +408,7 @@ EVE_GroupMsg_EX(groupMsg) {
 				if (strSecondInput == "")strSecondInput = "D100";
 
 				//Output string, save the main answer
-				string strAns = strNickName + "éª°å‡ºäº†: " + strSecondInput + "=";
+				string strAns = strNickName + "÷»³öÁË: " + strSecondInput + "=";
 
 				//Save the final result
 				int intMainSum = 0;
@@ -429,7 +436,7 @@ EVE_GroupMsg_EX(groupMsg) {
 				
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "ç”±äº" + strReason + strAns;
+					strAns = "ÓÉÓÚ" + strReason + strAns;
 				}
 
 				//Avoid Repeat Result
@@ -448,7 +455,7 @@ EVE_GroupMsg_EX(groupMsg) {
 
 				//If is hidden, send a private msg instead of a group one
 				if (isHidden) {
-					strAns = "åœ¨ç¾¤" + strGroupName + "ä¸­" + strAns;
+					strAns = "ÔÚÈº" + strGroupName + "ÖĞ" + strAns;
 					sendPrivateMsg(eve.fromQQ, strAns);
 				}
 				else
@@ -472,12 +479,12 @@ EVE_GroupMsg_EX(groupMsg) {
 		string name = eve.message.substr(intMsgCnt);
 		if (!name.empty()) {
 			GroupName[pairQQGroup] = name;
-			sendGroupMsg(eve.fromGroup, "å·²å°†" + strNickName + "çš„åç§°æ›´æ”¹ä¸º" + name);
+			sendGroupMsg(eve.fromGroup, "ÒÑ½«" + strNickName + "µÄÃû³Æ¸ü¸ÄÎª" + name);
 		}
 		else {
 			if (GroupName.count(pairQQGroup)){
 				GroupName.erase(pairQQGroup);
-				sendGroupMsg(eve.fromGroup, "å·²å°†" + strNickName + "çš„åç§°åˆ é™¤");
+				sendGroupMsg(eve.fromGroup, "ÒÑ½«" + strNickName + "µÄÃû³ÆÉ¾³ı");
 			}
 			else sendGroupMsg(eve.fromGroup, strErrMsg);
 		}
@@ -487,7 +494,7 @@ EVE_GroupMsg_EX(groupMsg) {
 	else if ((strFirstInput == ".deletename" || strFirstInput == ".delete" || strFirstInput == ".del" || strFirstInput == ".dn") && !DisabledGroup.count(eve.fromGroup)) {
 		if (GroupName.count(pairQQGroup)) {
 			GroupName.erase(pairQQGroup);
-			sendGroupMsg(eve.fromGroup, "å·²å°†" + strNickName + "çš„åç§°åˆ é™¤");
+			sendGroupMsg(eve.fromGroup, "ÒÑ½«" + strNickName + "µÄÃû³ÆÉ¾³ı");
 		}
 		else sendGroupMsg(eve.fromGroup, strErrMsg);
 		eve.message_block();
@@ -501,14 +508,14 @@ EVE_GroupMsg_EX(groupMsg) {
 			if (getGroupMemberInfo(eve.fromGroup, eve.fromQQ).permissions >= 2) {
 				if (DisabledGroup.count(eve.fromGroup)) {
 					DisabledGroup.erase(eve.fromGroup);
-					sendGroupMsg(eve.fromGroup, "æˆåŠŸå¼€å¯æœ¬æœºå™¨äºº!");
+					sendGroupMsg(eve.fromGroup, "³É¹¦¿ªÆô±¾»úÆ÷ÈË!");
 				}
-				else sendGroupMsg(eve.fromGroup, "æœ¬æœºå™¨äººå·²ç»å¤„äºå¼€å¯çŠ¶æ€!");
+				else sendGroupMsg(eve.fromGroup, "±¾»úÆ÷ÈËÒÑ¾­´¦ÓÚ¿ªÆô×´Ì¬!");
 			}
-			else sendGroupMsg(eve.fromGroup, "è®¿é—®è¢«æ‹’ç»,æ‚¨æ²¡æœ‰è¶³å¤Ÿçš„æƒé™!");
-			eve.message_block();
-			return;
+			else sendGroupMsg(eve.fromGroup, "·ÃÎÊ±»¾Ü¾ø,ÄúÃ»ÓĞ×ã¹»µÄÈ¨ÏŞ!");
 		}
+		eve.message_block();
+		return;
 	}
 	else if (strFirstInput == ".off") {
 		int intMsgCnt = strFirstInput.length();
@@ -518,27 +525,27 @@ EVE_GroupMsg_EX(groupMsg) {
 			if (getGroupMemberInfo(eve.fromGroup, eve.fromQQ).permissions >= 2) {
 				if (!DisabledGroup.count(eve.fromGroup)) {
 					DisabledGroup.insert(eve.fromGroup);
-					sendGroupMsg(eve.fromGroup, "æˆåŠŸå…³é—­æœ¬æœºå™¨äºº!");
+					sendGroupMsg(eve.fromGroup, "³É¹¦¹Ø±Õ±¾»úÆ÷ÈË!");
 				}
-				else sendGroupMsg(eve.fromGroup, "æœ¬æœºå™¨äººå·²ç»å¤„äºå…³é—­çŠ¶æ€!");
+				else sendGroupMsg(eve.fromGroup, "±¾»úÆ÷ÈËÒÑ¾­´¦ÓÚ¹Ø±Õ×´Ì¬!");
 			}
-			else sendGroupMsg(eve.fromGroup, "è®¿é—®è¢«æ‹’ç»,æ‚¨æ²¡æœ‰è¶³å¤Ÿçš„æƒé™!");
-			eve.message_block();
-			return;
+			else sendGroupMsg(eve.fromGroup, "·ÃÎÊ±»¾Ü¾ø,ÄúÃ»ÓĞ×ã¹»µÄÈ¨ÏŞ!");
 		}
+		eve.message_block();
+		return;
 	}
 	else if (strFirstInput == ".status"||strFirstInput==".st") {
 		int intMsgCnt = strFirstInput.length();
 		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
 		string Number = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
 		if (Number == "" || Number == to_string(getLoginQQ())) {
-			if(DisabledGroup.count(eve.fromGroup)) sendGroupMsg(eve.fromGroup, "æœºå™¨äººå¤„äºå…³é—­çŠ¶æ€!");
-			else sendGroupMsg(eve.fromGroup, "æœºå™¨äººå¤„äºå¼€å¯çŠ¶æ€!");
-			eve.message_block();
-			return;
+			if(DisabledGroup.count(eve.fromGroup)) sendGroupMsg(eve.fromGroup, "»úÆ÷ÈË´¦ÓÚ¹Ø±Õ×´Ì¬!");
+			else sendGroupMsg(eve.fromGroup, "»úÆ÷ÈË´¦ÓÚ¿ªÆô×´Ì¬!");
 		}
+		eve.message_block();
+		return;
 	}
-	else if (strFirstInput == ".å¸®åŠ©" || strFirstInput == ".help") {
+	else if ((strFirstInput == ".°ïÖú" || strFirstInput == ".help") && !DisabledGroup.count(eve.fromGroup)) {
 		int intMsgCnt = strFirstInput.length();
 		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
 		string Help = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
@@ -562,10 +569,12 @@ EVE_GroupMsg_EX(groupMsg) {
 			sendGroupMsg(eve.fromGroup, strSTMsg);
 		else if (Help == "me")
 			sendGroupMsg(eve.fromGroup, strMEMsg);
-		else if (Help == "help"|| Help == "å¸®åŠ©")
+		else if (Help == "help"|| Help == "°ïÖú")
 			sendGroupMsg(eve.fromGroup, strHMsg);
+		else if (Help == "sc")
+			sendGroupMsg(eve.fromGroup, strSCMsg);
 		else 
-			sendGroupMsg(eve.fromGroup, "æœªæ‰¾åˆ°å¯¹åº”çš„å¸®åŠ©æ–‡æœ¬");
+			sendGroupMsg(eve.fromGroup, "Î´ÕÒµ½¶ÔÓ¦µÄ°ïÖúÎÄ±¾");
 		eve.message_block();
 		return;
 	}
@@ -577,7 +586,66 @@ EVE_GroupMsg_EX(groupMsg) {
 		eve.message_block();
 		return;
 	}
-	if (eve.message[0] == '.')sendGroupMsg(eve.fromGroup, "å‘½ä»¤è¾“å…¥é”™è¯¯!æ˜¯å¦å°‘å†™äº†ç©ºæ ¼?è¾“å…¥.helpè·å–å¸®åŠ©");
+	else if (strFirstInput == ".sc" && !DisabledGroup.count(eve.fromGroup)) {
+		int intMsgCnt = strFirstInput.length();
+		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
+		string SanCost = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+		intMsgCnt = eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt);
+		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
+		string San= eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+		if (San == "" || SanCost == "" || SanCost.find("/")==string::npos) {
+			sendGroupMsg(eve.fromGroup, strErrMsg);
+			eve.message_block();
+			return;
+		}
+		for (auto i : San)
+			if (!isdigit(i)) {
+				sendGroupMsg(eve.fromGroup, strErrMsg);
+				eve.message_block();
+				return;
+			}
+		int intSan = 0;
+		stringstream toint;
+		toint << San;
+		toint >> intSan;
+		if (San.length() >= 3 || intSan == 0) {
+			sendGroupMsg(eve.fromGroup, "SanÖµÊäÈë²»ÕıÈ·!");
+			eve.message_block();
+			return;
+		}
+		string strAns = strNickName + "µÄSancheck:\n1D100=";
+		int D100res = 0;
+		MainRoll(D100res, "D100");
+		strAns += to_string(D100res);
+		if (D100res <= intSan) {
+			strAns += " ³É¹¦\nÄãµÄSanÖµ¼õÉÙ" + SanCost.substr(0, SanCost.find("/"));
+			int intReduceSan = 0;
+			int Rollres=MainRoll(intReduceSan, SanCost.substr(0, SanCost.find("/")));
+			if (Rollres == -1) {
+				sendGroupMsg(eve.fromGroup, strErrMsg);
+				eve.message_block();
+				return;
+			}
+			if(SanCost.substr(0, SanCost.find("/")).find("d") != string::npos|| SanCost.substr(0, SanCost.find("/")).find("D") != string::npos)strAns += "=" + to_string(intReduceSan);
+			strAns += +"µã,µ±Ç°Ê£Óà" + to_string(intSan - intReduceSan) + "µã";
+		}
+		else {
+			strAns += " Ê§°Ü\nÄãµÄSanÖµ¼õÉÙ" + SanCost.substr(SanCost.find("/")+1);
+			int intReduceSan = 0;
+			int Rollres=MainRoll(intReduceSan,SanCost.substr(SanCost.find("/")+1));
+			if (Rollres == -1) {
+				sendGroupMsg(eve.fromGroup, strErrMsg);
+				eve.message_block();
+				return;
+			}
+			if (SanCost.substr(SanCost.find("/") + 1).find("d") != string::npos || SanCost.substr(SanCost.find("/") + 1).find("D") != string::npos)strAns += "=" + to_string(intReduceSan);
+			strAns += +"µã,µ±Ç°Ê£Óà" + to_string(intSan - intReduceSan) + "µã";
+		}
+		sendGroupMsg(eve.fromGroup, strAns);
+		eve.message_block();
+		return;
+	}
+	if (eve.message[0] == '.')sendGroupMsg(eve.fromGroup, "ÃüÁîÊäÈë´íÎó!ÊÇ·ñÉÙĞ´ÁË¿Õ¸ñ?ÊäÈë.help»ñÈ¡°ïÖú");
 	eve.message_ignore();
 	return;
 }
@@ -590,8 +658,8 @@ EVE_GroupMsg_EX(groupMsg) {
 EVE_PrivateMsg_EX(privateMsg)
 {//Skip the space
 	while (eve.message[0] == ' ')eve.message.erase(eve.message.begin());
-
-	if (eve.message.find("ã€‚") == 0) {
+	while (eve.message[eve.message.length() - 1] == ' ')eve.message.erase(eve.message.end() - 1);
+	if (eve.message.find("¡£") == 0) {
 		eve.message.erase(eve.message.begin());
 		eve.message[0] = '.';
 	}
@@ -602,8 +670,10 @@ EVE_PrivateMsg_EX(privateMsg)
 	//Use the string to save the second part of the Input
 	string strSecondInput;
 
-	//Replace the "ã€‚" in the front to "."
+	//Replace the "¡£" in the front to "."
 	if (strFirstInput[0] != '.')return;
+
+	if (eve.message == "." || strFirstInput[1] == '.' || strFirstInput.find("¡£") == 1)return;
 
 	for (int k = 0; k != strFirstInput.length(); k++) {
 		if (isdigit(strFirstInput[k])) {
@@ -622,6 +692,7 @@ EVE_PrivateMsg_EX(privateMsg)
 			break;
 		}
 	}
+	if (strFirstInput == ".")strFirstInput = ".rd";
 
 	//Save the Nickname
 	string strNickName = getStrangerInfo(eve.fromQQ).nick;
@@ -630,7 +701,7 @@ EVE_PrivateMsg_EX(privateMsg)
 	for (auto &i : strFirstInput)if (isupper(i))i = tolower(i);
 
 	//Judge if it is a command
-	if (strFirstInput == ".o" || strFirstInput == ".rd" || strFirstInput == ".r") {
+	if (strFirstInput == ".o" || strFirstInput == ".rd" || strFirstInput == ".r" || strFirstInput == ".d") {
 		//Use it to save the count of the Msg have read
 		int intMsgCnt = eve.message.find(" ") == string::npos ? eve.message.length() : eve.message.find(" ");
 
@@ -667,7 +738,7 @@ EVE_PrivateMsg_EX(privateMsg)
 		//If the input contains # and the input before # is dice, send a roll-dice-time notice
 		if (strSecondInput.find("#") != string::npos && (strSecondInput.substr(0, strSecondInput.find("#")).find("d") != string::npos || strSecondInput.substr(0, strSecondInput.find("#")).find("D") != string::npos)) {
 			string strRollDiceTurnNotice;
-			strRollDiceTurnNotice += "æ·éª°æ¬¡æ•°: " + strSecondInput.substr(0, strSecondInput.find("#")) + "=" + to_string(intRollDiceTime) + "è½®";
+			strRollDiceTurnNotice += "ÖÀ÷»´ÎÊı: " + strSecondInput.substr(0, strSecondInput.find("#")) + "=" + to_string(intRollDiceTime) + "ÂÖ";
 			sendPrivateMsg(eve.fromQQ, strRollDiceTurnNotice);
 		}
 		if (intRollDiceTime > 10) {
@@ -683,7 +754,7 @@ EVE_PrivateMsg_EX(privateMsg)
 		for (int i = 0; i <= erase_cnt; ++i) strSecondInputCopy.erase(strSecondInputCopy.begin());
 		//Roll the dice
 		for (int w = 0; w != intRollDiceTime; ++w) {
-			if (strSecondInput == "äººç‰©ä½œæˆ" || strSecondInput == "äººç‰©åšæˆ" || strSecondInput == "äººç‰©åˆ¶ä½œ" || strSecondInput == "ä¸ƒç‰ˆäººç‰©ä½œæˆ" || strSecondInput == "ä¸ƒç‰ˆäººç‰©åšæˆ" || strSecondInput == "ä¸ƒç‰ˆäººç‰©åˆ¶ä½œ" || strSecondInput == "COC" || strSecondInput == "COC7") {
+			if (strSecondInput == "ÈËÎï×÷³É" || strSecondInput == "ÈËÎï×ö³É" || strSecondInput == "ÈËÎïÖÆ×÷" || strSecondInput == "Æß°æÈËÎï×÷³É" || strSecondInput == "Æß°æÈËÎï×ö³É" || strSecondInput == "Æß°æÈËÎïÖÆ×÷" || strSecondInput == "COC" || strSecondInput == "COC7") {
 				//COC7
 
 				//Save the result of COC7
@@ -694,7 +765,7 @@ EVE_PrivateMsg_EX(privateMsg)
 
 				sendPrivateMsg(eve.fromQQ, strMAns);
 			}
-			else if (strSecondInput == "å…­ç‰ˆäººç‰©ä½œæˆ" || strSecondInput == "å…­ç‰ˆäººç‰©åšæˆ" || strSecondInput == "å…­ç‰ˆäººç‰©åˆ¶ä½œ" || strSecondInput == "COC6") {
+			else if (strSecondInput == "Áù°æÈËÎï×÷³É" || strSecondInput == "Áù°æÈËÎï×ö³É" || strSecondInput == "Áù°æÈËÎïÖÆ×÷" || strSecondInput == "COC6") {
 				//COC6
 
 				//Save the result of COC6
@@ -706,11 +777,11 @@ EVE_PrivateMsg_EX(privateMsg)
 				sendPrivateMsg(eve.fromQQ, strMAns);
 
 			}
-			else if (strSecondInput == "DND" || strSecondInput == "è‹±é›„ä½œæˆ" || strSecondInput == "è‹±é›„åšæˆ" || strSecondInput == "è‹±é›„åˆ¶ä½œ") {
+			else if (strSecondInput == "DND" || strSecondInput == "Ó¢ĞÛ×÷³É" || strSecondInput == "Ó¢ĞÛ×ö³É" || strSecondInput == "Ó¢ĞÛÖÆ×÷") {
 				//DND
 
 				//Save the result of DND
-				string strMAns = strNickName + "çš„è‹±é›„åšæˆ:\n";
+				string strMAns = strNickName + "µÄÓ¢ĞÛ×ö³É:\n";
 
 				//Call the DND roll dice function
 				DND(strMAns);
@@ -730,14 +801,14 @@ EVE_PrivateMsg_EX(privateMsg)
 				}
 				int intBonusNum = Str2Int(strBonusNum);
 				if (intBonusNum <= 0) {
-					sendPrivateMsg(eve.fromQQ, "å¥–åŠ±éª°ä¸ªæ•°é”™è¯¯!");
+					sendPrivateMsg(eve.fromQQ, "½±Àø÷»¸öÊı´íÎó!");
 					eve.message_block();
 					return;
 				}
 				int D100res = 0;
 				MainRoll(D100res, "D100");
 				int MinVal = 10;
-				string strAns = strNickName + "éª°å‡ºäº†:\nD100=" + to_string(D100res) + "\nD10å¥–åŠ±éª°:";
+				string strAns = strNickName + "÷»³öÁË:\nD100=" + to_string(D100res) + "\nD10½±Àø÷»:";
 				for (int i = 1; i <= intBonusNum; i++) {
 					Sleep(1);
 					int D10res = -!!(D100res % 10);
@@ -746,11 +817,11 @@ EVE_PrivateMsg_EX(privateMsg)
 					strAns += to_string(D10res) + " ";
 				}
 				strAns[strAns.length() - 1] = '\n';
-				strAns += "ç»“æœä¸º:" + to_string((D100res / 10 < MinVal ? D100res / 10 : MinVal) * 10 + D100res % 10);
+				strAns += "½á¹ûÎª:" + to_string((D100res / 10 < MinVal ? D100res / 10 : MinVal) * 10 + D100res % 10);
 				if (intMsgCnt != eve.message.length())strReason = eve.message.substr(intMsgCnt);
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "ç”±äº" + strReason + strAns;
+					strAns = "ÓÉÓÚ" + strReason + strAns;
 				}
 				sendPrivateMsg(eve.fromQQ, strAns);
 			}
@@ -765,14 +836,14 @@ EVE_PrivateMsg_EX(privateMsg)
 				}
 				int intBonusNum = Str2Int(strBonusNum);
 				if (intBonusNum <= 0) {
-					sendPrivateMsg(eve.fromQQ, "æƒ©ç½šéª°ä¸ªæ•°é”™è¯¯!");
+					sendPrivateMsg(eve.fromQQ, "³Í·£÷»¸öÊı´íÎó!");
 					eve.message_block();
 					return;
 				}
 				int D100res = 0;
 				MainRoll(D100res, "D100");
 				int MaxVal = 0;
-				string strAns = strNickName + "éª°å‡ºäº†:\nD100=" + to_string(D100res) + "\næƒ©ç½šéª°:";
+				string strAns = strNickName + "÷»³öÁË:\nD100=" + to_string(D100res) + "\n³Í·£÷»:";
 				for (int i = 1; i <= intBonusNum; i++) {
 					Sleep(1);
 					int D10res = -!!(D100res % 10);
@@ -781,11 +852,11 @@ EVE_PrivateMsg_EX(privateMsg)
 					strAns += to_string(D10res) + " ";
 				}
 				strAns[strAns.length() - 1] = '\n';
-				strAns += "ç»“æœä¸º:" + to_string((D100res / 10 > MaxVal ? D100res / 10 : MaxVal) * 10 + D100res % 10);
+				strAns += "½á¹ûÎª:" + to_string((D100res / 10 > MaxVal ? D100res / 10 : MaxVal) * 10 + D100res % 10);
 				if (intMsgCnt != eve.message.length())strReason = eve.message.substr(intMsgCnt);
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "ç”±äº" + strReason + strAns;
+					strAns = "ÓÉÓÚ" + strReason + strAns;
 				}
 				sendPrivateMsg(eve.fromQQ, strAns);
 			}
@@ -803,7 +874,7 @@ EVE_PrivateMsg_EX(privateMsg)
 				if (strSecondInput == "")strSecondInput = "D100";
 
 				//Output string, save the main answer
-				string strAns = strNickName + "éª°å‡ºäº†: " + strSecondInput + "=";
+				string strAns = strNickName + "÷»³öÁË: " + strSecondInput + "=";
 
 				//Save the final result
 				int intMainSum = 0;
@@ -831,7 +902,7 @@ EVE_PrivateMsg_EX(privateMsg)
 
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "ç”±äº" + strReason + strAns;
+					strAns = "ÓÉÓÚ" + strReason + strAns;
 				}
 
 				//Avoid Repeat Result
@@ -856,7 +927,7 @@ EVE_PrivateMsg_EX(privateMsg)
 		eve.message_block();
 		return;
 	}
-	else if (strFirstInput == ".å¸®åŠ©" || strFirstInput == ".help") {
+	else if (strFirstInput == ".°ïÖú" || strFirstInput == ".help") {
 		int intMsgCnt = strFirstInput.length();
 		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
 		string Help = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
@@ -880,10 +951,12 @@ EVE_PrivateMsg_EX(privateMsg)
 			sendPrivateMsg(eve.fromQQ, strSTMsg);
 		else if (Help == "me")
 			sendPrivateMsg(eve.fromQQ, strMEMsg);
-		else if (Help == "help" || Help == "å¸®åŠ©")
+		else if (Help == "help" || Help == "°ïÖú")
 			sendPrivateMsg(eve.fromQQ, strHMsg);
+		else if (Help == "sc")
+			sendPrivateMsg(eve.fromQQ, strSCMsg);
 		else
-			sendPrivateMsg(eve.fromQQ, "æœªæ‰¾åˆ°å¯¹åº”çš„å¸®åŠ©æ–‡æœ¬");
+			sendPrivateMsg(eve.fromQQ, "Î´ÕÒµ½¶ÔÓ¦µÄ°ïÖúÎÄ±¾");
 		eve.message_block();
 		return;
 	}
@@ -910,23 +983,83 @@ EVE_PrivateMsg_EX(privateMsg)
 			sendPrivateMsg(eve.fromQQ, strErrMsg);
 		}
 		else if (strGroupnum == "") {
-			sendPrivateMsg(eve.fromQQ, "æœªè¾“å…¥ç¾¤å·!è¾“å…¥.helpæˆ–.å¸®åŠ©æ¥è·å¾—å¸®åŠ©!");
+			sendPrivateMsg(eve.fromQQ, "Î´ÊäÈëÈººÅ!ÊäÈë.help»ò.°ïÖúÀ´»ñµÃ°ïÖú!");
 		}
 		else {
 			pair<long long, long long>pairQQGroup(eve.fromQQ, llGroupnum);
 			if (!DisabledGroup.count(llGroupnum)) {
 				int Sendres=sendGroupMsg(llGroupnum, (GroupName.count(pairQQGroup) ? GroupName[pairQQGroup] : getGroupMemberInfo(llGroupnum, eve.fromQQ).GroupNickname.empty() ? getStrangerInfo(eve.fromQQ).nick : getGroupMemberInfo(llGroupnum, eve.fromQQ).GroupNickname) + Action);
-				if(Sendres>=0)sendPrivateMsg(eve.fromQQ, "å‘½ä»¤æ‰§è¡ŒæˆåŠŸ!");
-				else sendPrivateMsg(eve.fromQQ, "å‘½ä»¤æ‰§è¡Œå¤±è´¥!æ˜¯å¦è¾“å…¥äº†é”™è¯¯çš„ç¾¤å·?");
+				if(Sendres>=0)sendPrivateMsg(eve.fromQQ, "ÃüÁîÖ´ĞĞ³É¹¦!");
+				else sendPrivateMsg(eve.fromQQ, "ÃüÁîÖ´ĞĞÊ§°Ü!ÊÇ·ñÊäÈëÁË´íÎóµÄÈººÅ?");
 			}
 			else {
-				sendPrivateMsg(eve.fromQQ, "å‘é€å¤±è´¥!åœ¨æ­¤ç¾¤ä¸­æœºå™¨äººå·²è¢«å…³é—­!");
+				sendPrivateMsg(eve.fromQQ, "·¢ËÍÊ§°Ü!ÔÚ´ËÈºÖĞ»úÆ÷ÈËÒÑ±»¹Ø±Õ!");
 			}
 		}
 		eve.message_block();
 		return;
 	}
-	if(eve.message[0]=='.')sendPrivateMsg(eve.fromQQ, "å‘½ä»¤è¾“å…¥é”™è¯¯!æ˜¯å¦å°‘å†™äº†ç©ºæ ¼?è¾“å…¥.helpè·å–å¸®åŠ©");
+	else if (strFirstInput == ".sc") {
+		int intMsgCnt = strFirstInput.length();
+		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
+		string SanCost = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+		intMsgCnt = eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt);
+		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
+		string San = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+		if (San == "" || SanCost == "" || SanCost.find("/") == string::npos) {
+			sendPrivateMsg(eve.fromQQ, strErrMsg);
+			eve.message_block();
+			return;
+		}
+		for (auto i : San)
+			if (!isdigit(i)) {
+				sendPrivateMsg(eve.fromQQ, strErrMsg);
+				eve.message_block();
+				return;
+			}
+		int intSan = 0;
+		stringstream toint;
+		toint << San;
+		toint >> intSan;
+		if (San.length() >= 3 || intSan == 0) {
+			sendPrivateMsg(eve.fromQQ, "SanÖµÊäÈë²»ÕıÈ·!");
+			eve.message_block();
+			return;
+		}
+		string strAns = strNickName + "µÄSancheck:\n1D100=";
+		int D100res = 0;
+		MainRoll(D100res, "D100");
+		strAns += to_string(D100res);
+		if (D100res <= intSan) {
+			strAns += " ³É¹¦\nÄãµÄSanÖµ¼õÉÙ" + SanCost.substr(0, SanCost.find("/"));
+			int intReduceSan = 0;
+			int Rollres = MainRoll(intReduceSan, SanCost.substr(0, SanCost.find("/")));
+			if (Rollres == -1) {
+				sendPrivateMsg(eve.fromQQ, strErrMsg);
+				eve.message_block();
+				return;
+			}
+			if (SanCost.substr(0, SanCost.find("/")).find("d") != string::npos || SanCost.substr(0, SanCost.find("/")).find("D") != string::npos)strAns += "=" + to_string(intReduceSan);
+			strAns += +"µã,µ±Ç°Ê£Óà" + to_string(intSan - intReduceSan) + "µã";
+		}
+		else {
+			strAns += " Ê§°Ü\nÄãµÄSanÖµ¼õÉÙ" + SanCost.substr(SanCost.find("/")+1);
+			int intReduceSan = 0;
+			int Rollres = MainRoll(intReduceSan, SanCost.substr(SanCost.find("/")+1));
+			if (Rollres == -1) {
+				sendPrivateMsg(eve.fromQQ, strErrMsg);
+				eve.message_block();
+				return;
+			}
+			if (SanCost.substr(SanCost.find("/") + 1).find("d") != string::npos || SanCost.substr(SanCost.find("/") + 1).find("D") != string::npos)strAns += "=" + to_string(intReduceSan);
+			strAns += +"µã,µ±Ç°Ê£Óà" + to_string(intSan - intReduceSan) + "µã";
+		}
+		sendPrivateMsg(eve.fromQQ, strAns);
+		eve.message_block();
+		return;
+	}
+
+	if(eve.message[0]=='.')sendPrivateMsg(eve.fromQQ, "ÃüÁîÊäÈë´íÎó!ÊÇ·ñÉÙĞ´ÁË¿Õ¸ñ?ÊäÈë.help»ñÈ¡°ïÖú");
 	eve.message_ignore();
 	return;
 }
@@ -942,8 +1075,8 @@ EVE_DiscussMsg_EX(discussMsg) {
 
 	//Skip the space
 	while (eve.message[0] == ' ')eve.message.erase(eve.message.begin());
-
-	if (eve.message.find("ã€‚") == 0) {
+	while (eve.message[eve.message.length() - 1] == ' ')eve.message.erase(eve.message.end() - 1);
+	if (eve.message.find("¡£") == 0) {
 		eve.message.erase(eve.message.begin());
 		eve.message[0] = '.';
 	}
@@ -954,9 +1087,9 @@ EVE_DiscussMsg_EX(discussMsg) {
 	//Use the string to save the second part of the Input
 	string strSecondInput;
 
-	//Replace the "ã€‚" in the front to "."
+	//Replace the "¡£" in the front to "."
 	if (strFirstInput[0] != '.')return;
-
+	if (eve.message == "." || strFirstInput[1] == '.' || strFirstInput.find("¡£") == 1)return;
 	for (int k = 0; k != strFirstInput.length(); k++) {
 		if (isdigit(strFirstInput[k])) {
 			strSecondInput += strFirstInput.substr(k);
@@ -975,6 +1108,8 @@ EVE_DiscussMsg_EX(discussMsg) {
 		}
 	}
 
+	if (strFirstInput == ".")strFirstInput = ".rd";
+
 	//Save the DiscussNick. if the DiscussNick is empty, save the Nickname
 	string strNickName = DiscussName.count(pairQQDiscuss) ? DiscussName[pairQQDiscuss] : getStrangerInfo(eve.fromQQ).nick;
 
@@ -982,13 +1117,13 @@ EVE_DiscussMsg_EX(discussMsg) {
 	for (auto &i : strFirstInput)if (isupper(i))i = tolower(i);
 
 	//Judge if it is a command
-	if ((strFirstInput == ".o" || strFirstInput == ".h" || strFirstInput == ".rd" || strFirstInput == ".r" || strFirstInput == ".rh") && !DisabledDiscuss.count(eve.fromDiscuss)) {
+	if ((strFirstInput == ".o" || strFirstInput == ".h" || strFirstInput == ".rd" || strFirstInput == ".r" || strFirstInput == ".rh" || strFirstInput == ".d") && !DisabledDiscuss.count(eve.fromDiscuss)) {
 
 		//Save the Discuss name
 		string strDiscussName = to_string(eve.fromDiscuss);
 
 		//Use it to save the HiddenDice Notice
-		string strHiddenNotice = strNickName + "è¿›è¡Œäº†ä¸€æ¬¡æš—éª°";
+		string strHiddenNotice = strNickName + "½øĞĞÁËÒ»´Î°µ÷»";
 
 		//Use it to save the count of the Msg have read
 		int intMsgCnt = eve.message.find(" ") == string::npos ? eve.message.length() : eve.message.find(" ");
@@ -1030,7 +1165,7 @@ EVE_DiscussMsg_EX(discussMsg) {
 		//If the input contains # and the input before # is dice, send a roll-dice-time notice
 		if (strSecondInput.find("#") != string::npos && (strSecondInput.substr(0, strSecondInput.find("#")).find("d") != string::npos || strSecondInput.substr(0, strSecondInput.find("#")).find("D") != string::npos)) {
 			string strRollDiceTurnNotice;
-			strRollDiceTurnNotice += "æ·éª°æ¬¡æ•°: " + strSecondInput.substr(0, strSecondInput.find("#")) + "=" + to_string(intRollDiceTime) + "è½®";
+			strRollDiceTurnNotice += "ÖÀ÷»´ÎÊı: " + strSecondInput.substr(0, strSecondInput.find("#")) + "=" + to_string(intRollDiceTime) + "ÂÖ";
 			if (isHidden)sendPrivateMsg(eve.fromQQ, strRollDiceTurnNotice); else
 				sendDiscussMsg(eve.fromDiscuss, strRollDiceTurnNotice);
 		}
@@ -1047,7 +1182,7 @@ EVE_DiscussMsg_EX(discussMsg) {
 		for (int i = 0; i <= erase_cnt; ++i) strSecondInputCopy.erase(strSecondInputCopy.begin());
 		//Roll the dice
 		for (int w = 0; w != intRollDiceTime; ++w) {
-			if (strSecondInput == "äººç‰©ä½œæˆ" || strSecondInput == "äººç‰©åšæˆ" || strSecondInput == "äººç‰©åˆ¶ä½œ" || strSecondInput == "ä¸ƒç‰ˆäººç‰©ä½œæˆ" || strSecondInput == "ä¸ƒç‰ˆäººç‰©åšæˆ" || strSecondInput == "ä¸ƒç‰ˆäººç‰©åˆ¶ä½œ" || strSecondInput == "COC" || strSecondInput == "COC7") {
+			if (strSecondInput == "ÈËÎï×÷³É" || strSecondInput == "ÈËÎï×ö³É" || strSecondInput == "ÈËÎïÖÆ×÷" || strSecondInput == "Æß°æÈËÎï×÷³É" || strSecondInput == "Æß°æÈËÎï×ö³É" || strSecondInput == "Æß°æÈËÎïÖÆ×÷" || strSecondInput == "COC" || strSecondInput == "COC7") {
 				//COC7
 
 				//Save the result of COC7
@@ -1058,13 +1193,13 @@ EVE_DiscussMsg_EX(discussMsg) {
 
 				//If is hidden, send a private msg instead of a Discuss one
 				if (isHidden) {
-					strMAns = "åœ¨å¤šäººèŠå¤©" + strDiscussName + "ä¸­" + strMAns;
+					strMAns = "ÔÚ¶àÈËÁÄÌì" + strDiscussName + "ÖĞ" + strMAns;
 					sendPrivateMsg(eve.fromQQ, strMAns);
 				}
 				else
 					sendDiscussMsg(eve.fromDiscuss, strMAns);
 			}
-			else if (strSecondInput == "å…­ç‰ˆäººç‰©ä½œæˆ" || strSecondInput == "å…­ç‰ˆäººç‰©åšæˆ" || strSecondInput == "å…­ç‰ˆäººç‰©åˆ¶ä½œ" || strSecondInput == "COC6") {
+			else if (strSecondInput == "Áù°æÈËÎï×÷³É" || strSecondInput == "Áù°æÈËÎï×ö³É" || strSecondInput == "Áù°æÈËÎïÖÆ×÷" || strSecondInput == "COC6") {
 				//COC6
 
 				//Save the result of COC6
@@ -1075,24 +1210,24 @@ EVE_DiscussMsg_EX(discussMsg) {
 
 				//If is hidden, send a private msg instead of a Discuss one
 				if (isHidden) {
-					strMAns = "åœ¨å¤šäººèŠå¤©" + strDiscussName + "ä¸­" + strMAns;
+					strMAns = "ÔÚ¶àÈËÁÄÌì" + strDiscussName + "ÖĞ" + strMAns;
 					sendPrivateMsg(eve.fromQQ, strMAns);
 				}
 				else
 					sendDiscussMsg(eve.fromDiscuss, strMAns);
 			}
-			else if (strSecondInput == "DND" || strSecondInput == "è‹±é›„ä½œæˆ" || strSecondInput == "è‹±é›„åšæˆ" || strSecondInput == "è‹±é›„åˆ¶ä½œ") {
+			else if (strSecondInput == "DND" || strSecondInput == "Ó¢ĞÛ×÷³É" || strSecondInput == "Ó¢ĞÛ×ö³É" || strSecondInput == "Ó¢ĞÛÖÆ×÷") {
 				//DND
 
 				//Save the result of DND
-				string strMAns = strNickName + "çš„è‹±é›„åšæˆ:\n";
+				string strMAns = strNickName + "µÄÓ¢ĞÛ×ö³É:\n";
 
 				//Call the DND roll dice function
 				DND(strMAns);
 
 				//If is hidden, send a private msg instead of a Discuss one
 				if (isHidden) {
-					strMAns = "åœ¨å¤šäººèŠå¤©" + strDiscussName + "ä¸­" + strMAns;
+					strMAns = "ÔÚ¶àÈËÁÄÌì" + strDiscussName + "ÖĞ" + strMAns;
 					sendPrivateMsg(eve.fromQQ, strMAns);
 				}
 				else
@@ -1109,14 +1244,14 @@ EVE_DiscussMsg_EX(discussMsg) {
 				}
 				int intBonusNum = Str2Int(strBonusNum);
 				if (intBonusNum <= 0) {
-					sendDiscussMsg(eve.fromDiscuss, "å¥–åŠ±éª°ä¸ªæ•°é”™è¯¯!");
+					sendDiscussMsg(eve.fromDiscuss, "½±Àø÷»¸öÊı´íÎó!");
 					eve.message_block();
 					return;
 				}
 				int D100res = 0;
 				MainRoll(D100res, "D100");
 				int MinVal = 10;
-				string strAns = strNickName + "éª°å‡ºäº†:\nD100=" + to_string(D100res) + "\nå¥–åŠ±éª°:";
+				string strAns = strNickName + "÷»³öÁË:\nD100=" + to_string(D100res) + "\n½±Àø÷»:";
 				for (int i = 1; i <= intBonusNum; i++) {
 					Sleep(1);
 					int D10res = -!!(D100res % 10);
@@ -1125,14 +1260,14 @@ EVE_DiscussMsg_EX(discussMsg) {
 					strAns += to_string(D10res) + " ";
 				}
 				strAns[strAns.length() - 1] = '\n';
-				strAns += "ç»“æœä¸º:" + to_string((D100res / 10 < MinVal ? D100res / 10 : MinVal) * 10 + D100res % 10);
+				strAns += "½á¹ûÎª:" + to_string((D100res / 10 < MinVal ? D100res / 10 : MinVal) * 10 + D100res % 10);
 				if (intMsgCnt != eve.message.length())strReason = eve.message.substr(intMsgCnt);
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "ç”±äº" + strReason + strAns;
+					strAns = "ÓÉÓÚ" + strReason + strAns;
 				}
 				if (isHidden) {
-					strAns = "åœ¨å¤šäººèŠå¤©" + strDiscussName + "ä¸­" + strAns;
+					strAns = "ÔÚ¶àÈËÁÄÌì" + strDiscussName + "ÖĞ" + strAns;
 					sendPrivateMsg(eve.fromQQ, strAns);
 				}
 				else
@@ -1149,14 +1284,14 @@ EVE_DiscussMsg_EX(discussMsg) {
 				}
 				int intBonusNum = Str2Int(strBonusNum);
 				if (intBonusNum <= 0) {
-					sendDiscussMsg(eve.fromDiscuss, "æƒ©ç½šéª°ä¸ªæ•°é”™è¯¯!");
+					sendDiscussMsg(eve.fromDiscuss, "³Í·£÷»¸öÊı´íÎó!");
 					eve.message_block();
 					return;
 				}
 				int D100res = 0;
 				MainRoll(D100res, "D100");
 				int MaxVal = 0;
-				string strAns = strNickName + "éª°å‡ºäº†:\nD100=" + to_string(D100res) + "\næƒ©ç½šéª°:";
+				string strAns = strNickName + "÷»³öÁË:\nD100=" + to_string(D100res) + "\n³Í·£÷»:";
 				for (int i = 1; i <= intBonusNum; i++) {
 					Sleep(1);
 					int D10res = -!!(D100res % 10);
@@ -1165,15 +1300,15 @@ EVE_DiscussMsg_EX(discussMsg) {
 					strAns += to_string(D10res) + " ";
 				}
 				strAns[strAns.length() - 1] = '\n';
-				strAns += "ç»“æœä¸º:" + to_string((D100res / 10 > MaxVal ? D100res / 10 : MaxVal) * 10 + D100res % 10);
+				strAns += "½á¹ûÎª:" + to_string((D100res / 10 > MaxVal ? D100res / 10 : MaxVal) * 10 + D100res % 10);
 				while (eve.message[intMsgCnt] == ' '&&intMsgCnt != eve.message.length())intMsgCnt++;
 				if (intMsgCnt != eve.message.length())strReason = eve.message.substr(intMsgCnt);
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "ç”±äº" + strReason + strAns;
+					strAns = "ÓÉÓÚ" + strReason + strAns;
 				}
 				if (isHidden) {
-					strAns = "åœ¨å¤šäººèŠå¤©" + strDiscussName + "ä¸­" + strAns;
+					strAns = "ÔÚ¶àÈËÁÄÌì" + strDiscussName + "ÖĞ" + strAns;
 					sendPrivateMsg(eve.fromQQ, strAns);
 				}
 				else
@@ -1193,7 +1328,7 @@ EVE_DiscussMsg_EX(discussMsg) {
 				if (strSecondInput == "")strSecondInput = "D100";
 
 				//Output string, save the main answer
-				string strAns = strNickName + "éª°å‡ºäº†: " + strSecondInput + "=";
+				string strAns = strNickName + "÷»³öÁË: " + strSecondInput + "=";
 
 				//Save the final result
 				int intMainSum = 0;
@@ -1221,7 +1356,7 @@ EVE_DiscussMsg_EX(discussMsg) {
 
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "ç”±äº" + strReason + strAns;
+					strAns = "ÓÉÓÚ" + strReason + strAns;
 				}
 
 				//Avoid Repeat Result
@@ -1240,7 +1375,7 @@ EVE_DiscussMsg_EX(discussMsg) {
 
 				//If is hidden, send a private msg instead of a Discuss one
 				if (isHidden) {
-					strAns = "åœ¨å¤šäººèŠå¤©" + strDiscussName + "ä¸­" + strAns;
+					strAns = "ÔÚ¶àÈËÁÄÌì" + strDiscussName + "ÖĞ" + strAns;
 					sendPrivateMsg(eve.fromQQ, strAns);
 				}
 				else
@@ -1264,12 +1399,12 @@ EVE_DiscussMsg_EX(discussMsg) {
 		string name = eve.message.substr(intMsgCnt);
 		if (!name.empty()) {
 			DiscussName[pairQQDiscuss] = name;
-			sendDiscussMsg(eve.fromDiscuss, "å·²å°†" + strNickName + "çš„åç§°æ›´æ”¹ä¸º" + name);
+			sendDiscussMsg(eve.fromDiscuss, "ÒÑ½«" + strNickName + "µÄÃû³Æ¸ü¸ÄÎª" + name);
 		}
 		else {
 			if (DiscussName.count(pairQQDiscuss)) {
 				DiscussName.erase(pairQQDiscuss);
-				sendDiscussMsg(eve.fromDiscuss, "å·²å°†" + strNickName + "çš„åç§°åˆ é™¤");
+				sendDiscussMsg(eve.fromDiscuss, "ÒÑ½«" + strNickName + "µÄÃû³ÆÉ¾³ı");
 			}
 			else sendDiscussMsg(eve.fromDiscuss, strErrMsg);
 		}
@@ -1279,7 +1414,7 @@ EVE_DiscussMsg_EX(discussMsg) {
 	else if ((strFirstInput == ".deletename" || strFirstInput == ".delete" || strFirstInput == ".del" || strFirstInput == ".dn") && !DisabledDiscuss.count(eve.fromDiscuss)) {
 		if (DiscussName.count(pairQQDiscuss)) {
 			DiscussName.erase(pairQQDiscuss);
-			sendDiscussMsg(eve.fromDiscuss, "å·²å°†" + strNickName + "çš„åç§°åˆ é™¤");
+			sendDiscussMsg(eve.fromDiscuss, "ÒÑ½«" + strNickName + "µÄÃû³ÆÉ¾³ı");
 		}
 		else sendDiscussMsg(eve.fromDiscuss, strErrMsg);
 		eve.message_block();
@@ -1292,13 +1427,12 @@ EVE_DiscussMsg_EX(discussMsg) {
 		if (Number == "" || Number == to_string(getLoginQQ())) {
 			if (DisabledDiscuss.count(eve.fromDiscuss)) {
 				DisabledDiscuss.erase(eve.fromDiscuss);
-				sendDiscussMsg(eve.fromDiscuss, "æˆåŠŸå¼€å¯æœ¬æœºå™¨äºº!");
+				sendDiscussMsg(eve.fromDiscuss, "³É¹¦¿ªÆô±¾»úÆ÷ÈË!");
 			}
-			else sendDiscussMsg(eve.fromDiscuss, "æœ¬æœºå™¨äººå·²ç»å¤„äºå¼€å¯çŠ¶æ€!");
-
-			eve.message_block();
-			return;
+			else sendDiscussMsg(eve.fromDiscuss, "±¾»úÆ÷ÈËÒÑ¾­´¦ÓÚ¿ªÆô×´Ì¬!");
 		}
+		eve.message_block();
+		return;
 	}
 	else if (strFirstInput == ".off") {
 		int intMsgCnt = strFirstInput.length();
@@ -1307,25 +1441,25 @@ EVE_DiscussMsg_EX(discussMsg) {
 		if (Number == "" || Number == to_string(getLoginQQ())) {
 			if (!DisabledDiscuss.count(eve.fromDiscuss)) {
 				DisabledDiscuss.insert(eve.fromDiscuss);
-				sendDiscussMsg(eve.fromDiscuss, "æˆåŠŸå…³é—­æœ¬æœºå™¨äºº!");
+				sendDiscussMsg(eve.fromDiscuss, "³É¹¦¹Ø±Õ±¾»úÆ÷ÈË!");
 			}
-			else sendDiscussMsg(eve.fromDiscuss, "æœ¬æœºå™¨äººå·²ç»å¤„äºå…³é—­çŠ¶æ€!");
-			eve.message_block();
-			return;
+			else sendDiscussMsg(eve.fromDiscuss, "±¾»úÆ÷ÈËÒÑ¾­´¦ÓÚ¹Ø±Õ×´Ì¬!");
 		}
+		eve.message_block();
+		return;
 	}
 	else if (strFirstInput == ".status" || strFirstInput == ".st") {
 		int intMsgCnt = strFirstInput.length();
 		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
 		string Number = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
 		if (Number == "" || Number == to_string(getLoginQQ())) {
-			if (DisabledDiscuss.count(eve.fromDiscuss)) sendDiscussMsg(eve.fromDiscuss, "æœºå™¨äººå¤„äºå…³é—­çŠ¶æ€!");
-			else sendDiscussMsg(eve.fromDiscuss, "æœºå™¨äººå¤„äºå¼€å¯çŠ¶æ€!");
-			eve.message_block();
-			return;
+			if (DisabledDiscuss.count(eve.fromDiscuss)) sendDiscussMsg(eve.fromDiscuss, "»úÆ÷ÈË´¦ÓÚ¹Ø±Õ×´Ì¬!");
+			else sendDiscussMsg(eve.fromDiscuss, "»úÆ÷ÈË´¦ÓÚ¿ªÆô×´Ì¬!");
 		}
+		eve.message_block();
+		return;
 	}
-	else if (strFirstInput == ".å¸®åŠ©" || strFirstInput == ".help") {
+	else if ((strFirstInput == ".°ïÖú" || strFirstInput == ".help") && !DisabledDiscuss.count(eve.fromDiscuss)) {
 		int intMsgCnt = strFirstInput.length();
 		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
 		string Help = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
@@ -1349,10 +1483,12 @@ EVE_DiscussMsg_EX(discussMsg) {
 			sendDiscussMsg(eve.fromDiscuss, strSTMsg);
 		else if (Help == "me")
 			sendDiscussMsg(eve.fromDiscuss, strMEMsg);
-		else if (Help == "help" || Help == "å¸®åŠ©")
+		else if (Help == "sc")
+			sendDiscussMsg(eve.fromDiscuss, strSCMsg);
+		else if (Help == "help" || Help == "°ïÖú")
 			sendDiscussMsg(eve.fromDiscuss, strHMsg);
 		else
-			sendDiscussMsg(eve.fromDiscuss, "æœªæ‰¾åˆ°å¯¹åº”çš„å¸®åŠ©æ–‡æœ¬");
+			sendDiscussMsg(eve.fromDiscuss, "Î´ÕÒµ½¶ÔÓ¦µÄ°ïÖúÎÄ±¾");
 		eve.message_block();
 		return;
 	}
@@ -1364,7 +1500,66 @@ EVE_DiscussMsg_EX(discussMsg) {
 		eve.message_block();
 		return;
 	}
-	if (eve.message[0] == '.')sendDiscussMsg(eve.fromDiscuss, "å‘½ä»¤è¾“å…¥é”™è¯¯!æ˜¯å¦å°‘å†™äº†ç©ºæ ¼?è¾“å…¥.helpè·å–å¸®åŠ©");
+	else if (strFirstInput == ".sc" && !DisabledDiscuss.count(eve.fromDiscuss)) {
+		int intMsgCnt = strFirstInput.length();
+		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
+		string SanCost = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+		intMsgCnt = eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt);
+		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
+		string San = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+		if (San == "" || SanCost == ""||SanCost.find("/")==string::npos) {
+			sendDiscussMsg(eve.fromDiscuss, strErrMsg);
+			eve.message_block();
+			return;
+		}
+		for (auto i : San)
+			if (!isdigit(i)) {
+				sendDiscussMsg(eve.fromDiscuss, strErrMsg);
+				eve.message_block();
+				return;
+			}
+		int intSan = 0;
+		stringstream toint;
+		toint << San;
+		toint >> intSan;
+		if (San.length() >= 3 || intSan == 0) {
+			sendDiscussMsg(eve.fromDiscuss, "SanÖµÊäÈë²»ÕıÈ·!");
+			eve.message_block();
+			return;
+		}
+		string strAns = strNickName + "µÄSancheck:\n1D100=";
+		int D100res = 0;
+		MainRoll(D100res, "D100");
+		strAns += to_string(D100res);
+		if (D100res <= intSan) {
+			strAns += " ³É¹¦\nÄãµÄSanÖµ¼õÉÙ" + SanCost.substr(0, SanCost.find("/"));
+			int intReduceSan = 0;
+			int Rollres = MainRoll(intReduceSan, SanCost.substr(0, SanCost.find("/")));
+			if (Rollres == -1) {
+				sendDiscussMsg(eve.fromDiscuss, strErrMsg);
+				eve.message_block();
+				return;
+			}
+			if (SanCost.substr(0, SanCost.find("/")).find("d") != string::npos || SanCost.substr(0, SanCost.find("/")).find("D") != string::npos)strAns += "=" + to_string(intReduceSan);
+			strAns += +"µã,µ±Ç°Ê£Óà" + to_string(intSan - intReduceSan) + "µã";
+		}
+		else {
+			strAns += " Ê§°Ü\nÄãµÄSanÖµ¼õÉÙ" + SanCost.substr(SanCost.find("/")+1);
+			int intReduceSan = 0;
+			int Rollres = MainRoll(intReduceSan, SanCost.substr(SanCost.find("/")+1));
+			if (Rollres == -1) {
+				sendDiscussMsg(eve.fromDiscuss, strErrMsg);
+				eve.message_block();
+				return;
+			}
+			if (SanCost.substr(SanCost.find("/") + 1).find("d") != string::npos || SanCost.substr(SanCost.find("/") + 1).find("D") != string::npos)strAns += "=" + to_string(intReduceSan);
+			strAns += +"µã,µ±Ç°Ê£Óà" + to_string(intSan - intReduceSan) + "µã";
+		}
+		sendDiscussMsg(eve.fromDiscuss, strAns);
+		eve.message_block();
+		return;
+	}
+	if (eve.message[0] == '.')sendDiscussMsg(eve.fromDiscuss, "ÃüÁîÊäÈë´íÎó!ÊÇ·ñÉÙĞ´ÁË¿Õ¸ñ?ÊäÈë.help»ñÈ¡°ïÖú");
 	eve.message_ignore();
 	return;
 }
