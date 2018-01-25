@@ -47,8 +47,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Dice!'
-copyright = '2018, W4123溯洄'
-author = 'W4123溯洄'
+copyright = u"2018, W4123溯洄"
+author = u"W4123溯洄"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -140,7 +140,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'Dice.tex', 'Dice! Documentation',
-     'W4123溯洄', 'manual'),
+     u"W4123溯洄", 'manual'),
 ]
 
 
