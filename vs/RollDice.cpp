@@ -5,6 +5,7 @@
 #include <functional>
 #include <windows.h>
 #include "..\src\RollDice.h"
+#include "..\src\CQSDK\CQTools.h"
 using namespace std;
 
 const string TempInsanity[11]{ "",
@@ -12,7 +13,7 @@ const string TempInsanity[11]{ "",
 "¼ÙÐÔ²Ð¼²£ºµ÷²éÔ±ÏÝÈëÁËÐÄÀíÐÔµÄÊ§Ã÷£¬Ê§´ÏÒÔ¼°ÇûÌåÈ±Ê§¸ÐÖÐ£¬³ÖÐø{1}ÂÖ¡£",
 "±©Á¦ÇãÏò£ºµ÷²éÔ±ÏÝÈëÁËÁùÇ×²»ÈÏµÄ±©Á¦ÐÐÎªÖÐ£¬¶ÔÖÜÎ§µÄµÐÈËÓëÓÑ·½½øÐÐ×ÅÎÞ²î±ðµÄ¹¥»÷£¬³ÖÐø{1}ÂÖ¡£",
 "Æ«Ö´£ºµ÷²éÔ±ÏÝÈëÁËÑÏÖØµÄÆ«Ö´ÍýÏëÖ®ÖÐ¡£ÓÐÈËÔÚ°µÖÐ¿úÊÓ×ÅËûÃÇ£¬Í¬°éÖÐÓÐÈË±³ÅÑÁËËûÃÇ£¬Ã»ÓÐÈË¿ÉÒÔÐÅÈÎ£¬ÍòÊÂ½ÔÐé¡£³ÖÐø{1}ÂÖ¡£",
-"ÈË¼ÊÒÀÀµ£ºµ÷²éÔ±ÒòÎªÒ»Ð©Ô­Òò¶ø½µËûÈËÎóÈÏÎªÁËËûÖØÒªµÄÈË²¢ÇÒÅ¬Á¦µÄ»áÓëÄÇ¸öÈË±£³ÖÄÇÖÖ¹ØÏµ£¬³ÖÐø{1}ÂÖ¡£",
+"ÈË¼ÊÒÀÀµ£ºµ÷²éÔ±ÒòÎªÒ»Ð©Ô­Òò¶ø½«ËûÈËÎóÈÏÎªÁËËûÖØÒªµÄÈË²¢ÇÒÅ¬Á¦µÄ»áÓëÄÇ¸öÈË±£³ÖÄÇÖÖ¹ØÏµ£¬³ÖÐø{1}ÂÖ¡£",
 "»èØÊ£ºµ÷²éÔ±µ±³¡»èµ¹£¬»èÃÔ×´Ì¬³ÖÐø{1}ÂÖ¡£",
 "ÌÓ±ÜÐÐÎª£ºµ÷²éÔ±»áÓÃÈÎºÎµÄÊÖ¶ÎÊÔÍ¼ÌÓÀëÏÖÔÚËù´¦µÄÎ»ÖÃ£¬×´Ì¬³ÖÐø{1}ÂÖ¡£",
 "½ßË»µ×Àï£ºµ÷²éÔ±±íÏÖ³ö´óÐ¦£¬¿ÞÆü£¬Ë»ºð£¬º¦ÅÂµÈµÄ¼«¶ËÇéÐ÷±íÏÖ£¬³ÖÐø{1}ÂÖ¡£",
@@ -60,7 +61,7 @@ inline int RollDice(string Dice) {
 		}
 		if (DiceType <= 0)return -1;
 		uniform_int_distribution<int> dis(1, DiceType);
-		mt19937 gen(clock());
+		mt19937 gen(static_cast<unsigned int> (GetCycleCount()));
 		//srand((unsigned)rand() + (unsigned)time(nullptr));//Generate a new key
 		int sum = 0;
 		for (int i = 1; i <= DiceCnt; i++) {
@@ -90,7 +91,7 @@ inline int RollDice(string Dice) {
 		}
 		if (DiceType <= 0)return -1;
 		uniform_int_distribution<int> dis(1, DiceType);
-		mt19937 gen(clock());
+		mt19937 gen(static_cast<unsigned int> (GetCycleCount()));
 		//srand((unsigned)rand() + (unsigned)time(nullptr));
 		int sum = 0;
 		for (int i = 1; i <= DiceCnt; i++) {
@@ -139,7 +140,7 @@ inline int RollDice(string Dice, string &strAns, char Operator = '+') {
 		if (DiceType <= 0)return -1;
 		//srand((unsigned)rand() + (unsigned)time(nullptr));//Generate a new key
 		uniform_int_distribution<int> dis(1, DiceType);
-		mt19937 gen(clock());
+		mt19937 gen(static_cast<unsigned int> (GetCycleCount()));
 		int sum = 0;
 		for (int i = 1; i <= DiceCnt; i++) {
 			int tmpRes = dis(gen);//Get the random number and add it to the output string
@@ -170,7 +171,7 @@ inline int RollDice(string Dice, string &strAns, char Operator = '+') {
 		}
 		if (DiceType <= 0)return -1;
 		uniform_int_distribution<int> dis(1, DiceType);
-		mt19937 gen(clock());
+		mt19937 gen(static_cast<unsigned int> (GetCycleCount()));
 		//srand((unsigned)rand() + (unsigned)time(nullptr));
 		int sum = 0;
 		for (int i = 1; i <= DiceCnt; i++) {
@@ -219,7 +220,7 @@ inline int MainRoll(int &intSum, string strInput, string &strFirstOutput, string
 			}
 			else
 				strFirstOutput.erase(strFirstOutput.end() - 1);
-			Sleep(1);
+			
 			intSum += ttmpRes * positiveornegative;
 			strSecondOutput += to_string(ttmpRes) + strInput[intSecondLocation];
 			intTmpLoc = intSecondLocation + 1;
@@ -259,7 +260,7 @@ inline int MainRoll(int &intSum,string strInput) {
 	while (intLocation != strInput.size()) {
 		if (strInput[intLocation] == '+' || strInput[intLocation] == '-') {
 			ttmpRes = RollDice(strInput.substr(intTmpLoc, intLocation - intTmpLoc));
-			Sleep(1);
+			
 			intSum += ttmpRes * positiveornegative;
 			intTmpLoc = intLocation + 1;
 			if (ttmpRes == -1) {
@@ -281,42 +282,42 @@ inline void COC6(string &strMAns) {
 	strMAns += '\n';
 	strMAns += "Á¦Á¿STR=3D6=";
 	int STR = RollDice("3D6");
-	Sleep(1);
+	
 	strMAns += to_string(STR);
 	strMAns += '\n';
 	strMAns += "ÌåÖÊCON=3D6=";
 	int CON = RollDice("3D6");
-	Sleep(1);
+	
 	strMAns += to_string(CON);
 	strMAns += '\n';
 	strMAns += "ÌåÐÍSIZ=3D6=";
 	int SIZ = RollDice("3D6");
-	Sleep(1);
+	
 	strMAns += to_string(SIZ);
 	strMAns += '\n';
 	strMAns += "Ãô½ÝDEX=3D6=";
 	int DEX = RollDice("3D6");
-	Sleep(1);
+	
 	strMAns += to_string(DEX);
 	strMAns += '\n';
 	strMAns += "ÍâÃ²APP=3D6=";
 	int APP = RollDice("3D6");
-	Sleep(1);
+	
 	strMAns += to_string(APP);
 	strMAns += '\n';
 	strMAns += "ÖÇÁ¦INT=2D6+6=";
 	int INT = RollDice("2D6") + 6;
-	Sleep(1);
+	
 	strMAns += to_string(INT);
 	strMAns += '\n';
 	strMAns += "ÒâÖ¾POW=2D6+6=";
 	int POW = RollDice("2D6") + 6;
-	Sleep(1);
+	
 	strMAns += to_string(POW);
 	strMAns += '\n';
 	strMAns += "½ÌÓýEDU=3D6+3=";
 	int EDU = RollDice("3D6") + 3;
-	Sleep(1);
+	
 	strMAns += to_string(EDU);
 	int SAN = POW * 5;
 	int IDEA = INT * 5;
@@ -353,47 +354,47 @@ inline void COC7(string &strMAns) {
 	strMAns += '\n';
 	strMAns += "Á¦Á¿STR=3D6*5=";
 	int STR = RollDice("3D6") * 5;
-	Sleep(1);
+	
 	strMAns += to_string(STR) + "/" + to_string(STR / 2) + "/" + to_string(STR / 5);
 	strMAns += '\n';
 	strMAns += "ÌåÖÊCON=3D6*5=";
 	int CON = RollDice("3D6") * 5;
-	Sleep(1);
+	
 	strMAns += to_string(CON) + "/" + to_string(CON / 2) + "/" + to_string(CON / 5);
 	strMAns += '\n';
 	strMAns += "ÌåÐÍSIZ=(2D6+6)*5=";
 	int SIZ = (RollDice("2D6") + 6) * 5;
-	Sleep(1);
+	
 	strMAns += to_string(SIZ) + "/" + to_string(SIZ / 2) + "/" + to_string(SIZ / 5);
 	strMAns += '\n';
 	strMAns += "Ãô½ÝDEX=3D6*5=";
 	int DEX = RollDice("3D6") * 5;
-	Sleep(1);
+	
 	strMAns += to_string(DEX) + "/" + to_string(DEX / 2) + "/" + to_string(DEX / 5);
 	strMAns += '\n';
 	strMAns += "ÍâÃ²APP=3D6*5=";
 	int APP = RollDice("3D6") * 5;
-	Sleep(1);
+	
 	strMAns += to_string(APP) + "/" + to_string(APP / 2) + "/" + to_string(APP / 5);
 	strMAns += '\n';
 	strMAns += "ÖÇÁ¦INT=(2D6+6)*5=";
 	int INT = (RollDice("2D6") + 6) * 5;
-	Sleep(1);
+	
 	strMAns += to_string(INT) + "/" + to_string(INT / 2) + "/" + to_string(INT / 5);
 	strMAns += '\n';
 	strMAns += "ÒâÖ¾POW=3D6*5=";
 	int POW = RollDice("3D6") * 5;
-	Sleep(1);
+	
 	strMAns += to_string(POW) + "/" + to_string(POW / 2) + "/" + to_string(POW / 5);
 	strMAns += '\n';
 	strMAns += "½ÌÓýEDU=(2D6+6)*5=";
 	int EDU = (RollDice("2D6") + 6) * 5;
-	Sleep(1);
+	
 	strMAns += to_string(EDU) + "/" + to_string(EDU / 2) + "/" + to_string(EDU / 5);
 	strMAns += '\n';
 	strMAns += "ÐÒÔËLUCK=3D6*5=";
 	int LUCK = RollDice("3D6") * 5;
-	Sleep(1);
+	
 	strMAns += to_string(LUCK);
 	strMAns += "\nÀíÖÇSAN=POW=";
 	int SAN = POW;
@@ -443,7 +444,7 @@ void DND(string &strOutput) {
 	for (int i = 0; i <= 5; i++) {
 		for (int j = 1; j <= 4; j++) {
 			res.push_back(RollDice("D6"));
-			Sleep(1);
+			
 		}
 		sort(res.begin(), res.end(), greater<int>());
 		strOutput += strDNDName[i] + ":" + to_string(res[0] + res[1] + res[2]) + " ";
@@ -454,7 +455,7 @@ inline void TempInsane(string &strAns) {
 	int Res = 0;
 	MainRoll(Res, "D10");
 	strAns += "1D10=" + to_string(Res) + "\nÖ¢×´:" + TempInsanity[Res];
-	Sleep(1);
+	
 	int Turn = 0;
 	MainRoll(Turn, "D10");
 	string Time = "1D10=" + to_string(Turn);
@@ -465,13 +466,13 @@ inline void LongInsane(string &strAns) {
 	int Res = 0;
 	MainRoll(Res, "D10");
 	strAns += "1D10=" + to_string(Res) + "\nÖ¢×´:" + LongInsanity[Res];
-	Sleep(1);
+	
 	int Turn = 0;
 	MainRoll(Turn, "D10");
 	string Time = "1D10=" + to_string(Turn);
 	strAns.replace(strAns.find("{1}"), 3, Time);
 }
-string strRules = string(R"QWQWQ([||Á¦Á¿||STR||]£¨STR£©£ºÍ¶3d6£¬½á¹û³Ë5£¬¼´ÊÇÁ¦Á¿ÊôÐÔ¡£
+string strRules = string(R"QWQWQ([||Á¦Á¿||STR||]Á¦Á¿£¨STR£©£ºÍ¶3d6£¬½á¹û³Ë5£¬¼´ÊÇÁ¦Á¿ÊôÐÔ¡£
 Á¦Á¿ÊÇµ÷²éÔ±¼¡ÈâÄÜÁ¦µÄÁ¿»¯¡£Á¦Á¿Ô½¸ß£¬µ÷²éÔ±¾ÍÄÜ¾ÙÆð¸üÖØµÄ¶«Î÷»ò¸üÇ¿ÓÐÁ¦µÄ×¥×¡ÎïÌå¡£
 ¸ÃÊôÐÔ»á¾ö¶¨µ÷²éÔ±ÔÚ½üÕ½ÖÐÔì³ÉµÄÉËº¦¡£Á¦Á¿½µµÍÎª0Ê±£¬µ÷²éÔ±¾Í³ÉÎªÁËÒ»¸öÎÞ·¨Àë¿ª´²ÆÌµÄ²¡ºÅ¡£
 ÕâÐ©Êý×ÖÒâÎ¶×Å:
@@ -624,7 +625,7 @@ string strRules = string(R"QWQWQ([||Á¦Á¿||STR||]£¨STR£©£ºÍ¶3d6£¬½á¹û³Ë5£¬¼´ÊÇÁ¦Á
 ºâÁ¿ÁËµ÷²éÔ±±íÏÖ³öÀ´µÄ¸»Ô£³Ì¶ÈÒÔ¼°¾­¼ÃÉÏµÄ×ÔÐÅ¶È¡£
 Ç®ÊÇÇÃÃÅ×©£»Èç¹ûµ÷²éÔ±³¢ÊÔÓÃËûµÄ¾­¼ÃµØÎ»À´´ï³ÉÄ³¸öÄ¿±ê£¬ÄÇÃ´Ò²ÐíÊ¹ÓÃÐÅÓÃÆÀ¼¶¼¼ÄÜ»á±È½ÏºÏÊÊ¡£ÐÅÓÃÆÀ¼¶¿ÉÒÔ±»ÓÃÀ´È¡´úAPPÀ´ÆÀ¹ÀµÚÒ»Ó¡Ïó¡£
 ÐÅÓÃÆÀ¼¶²¢²»ÊÇÒ»¸ö±»ÓÃÓÚÆÀ¹À¾­¼Ã¸»Ô£¶ÈµÄ¼¼ÄÜ£¬Ò²²»Ó¦¸ÃÓëÆäËû¼¼ÄÜ¹Ò¹³¡£Ò»¸ö¸ßÐÅÓÃÆÀ¼¶ÔÚÓÎÏ·ÖÐ½«»áÊÇÒ»¸öÓÐÓÃµÄ×ÊÔ´£¬²¢ÇÒÓ¦µ±ÔÚ´´Ôìµ÷²éÔ±Ê±¼ÓÉÏÒ»¶¨µÄµãÊý¡£Ã¿¸öÖ°ÒµÓÐ×ÅÆðÊ¼µÄÐÅÓÃÆÀ¼¶·¶Î§£¬²¢ÇÒÓ¦µ±»¨·Ñ¼¼ÄÜµãÀ´´ïµ½Õâ¸öÆÀ¼¶·¶Î§ÄÚ¡£
-¿ËËÕÂ³µÄºô»½²¢²»ÊÇÒ»¸öÐèÒª×ÐÏ¸×·ËÝ½ðÇ®µÄÓÎÏ·£»È»¶ø£¬ÁË½âÒ»Ãûµ÷²éÔ±µÄ¾­¼ÃÄÜµ½Ê²Ã´³Ì¶ÈÒ²ÊÇºÜÓÐÓÃµÄ¡ªÀýÈç£¬Ò»¸öµ÷²éÔ±ÊÇ·ñ×ãÒÔÖ§¸¶µÃÆð¹ÍÓ¶Ò»¶Ó¿¼¹ÅÑ§¼ÒÒÔ¼°¹¤×÷ÈËÔ±À´ÍÚ¾òÒ»¸ö°£¼°·ØÄ¹£¿Ò»Ãûµ÷²éÔ±µÄÐÅÓÃÆÀ¼¶¿ÉÒÔËæ×ÅÊ±¼ä¶ø¸Ä±ä¡£µ÷²éÔ±µÄ¿ËËÕÂ³Éñ»°¼¼ÄÜÓÐ×ÅÒ×ÓÚ·è¿ñµÄÇãÏò£¬¶øÕâ¸ö¼¼ÄÜ¿ÉÄÜµ¼ÖÂÊ§Òµ²¢Òò´Ë±ä³ÉÒ»¸ö¸üµÍµÄÐÅÓÃÆÀ¼¶¡£¼ûÐÅÓÃÆÀ¼¶Óëµ÷²éÔ±µÄÖ§³ö£¨95Ò³£©À´»ñµÃÒ»¸ö¸ü¼ÓÉîÈëµÄ¶ÔÐÅÓÃÆÀ¼¶¼°ÆäÊ¹ÓÃµÄÁË½â¡£
+¿ËËÕÂ³µÄºô»½²¢²»ÊÇÒ»¸öÐèÒª×ÐÏ¸×·ËÝ½ðÇ®µÄÓÎÏ·£»È»¶ø£¬ÁË½âÒ»Ãûµ÷²éÔ±µÄ¾­¼ÃÄÜµ½Ê²Ã´³Ì¶ÈÒ²ÊÇºÜÓÐÓÃµÄ¡ªÀýÈç£¬Ò»¸öµ÷²éÔ±ÊÇ·ñ×ãÒÔÖ§¸¶µÃÆð¹ÍÓ¶Ò»¶Ó¿¼¹ÅÑ§¼ÒÒÔ¼°¹¤×÷ÈËÔ±À´ÍÚ¾òÒ»¸ö°£¼°·ØÄ¹£¿Ò»Ãûµ÷²éÔ±µÄÐÅÓÃÆÀ¼¶¿ÉÒÔËæ×ÅÊ±¼ä¶ø¸Ä±ä¡£µ÷²éÔ±µÄ¿ËËÕÂ³Éñ»°¼¼ÄÜÓÐ×ÅÒ×ÓÚ·è¿ñµÄÇãÏò£¬¶øÕâ¸ö¼¼ÄÜ¿ÉÄÜµ¼ÖÂÊ§Òµ²¢Òò´Ë±ä³ÉÒ»¸ö¸üµÍµÄÐÅÓÃÆÀ¼¶¡£
 ¶Ô¿¹¼¼ÄÜ/ÄÑ¶ÈµÈ¼¶£º ³£¹æÄÑ¶È£º´ÓÒøÐÐ»òÆóÒµµÃµ½Ò»±Ê´û¿î£»ÈÆ¿ª¶ÔÖ¤Ã÷ÊéµÄÐèÇó£»ÔÚÉÌµê»òÕß¶Ä³¡µÃµ½ÐÅÓÃ¶î¶È£»ÔÚ¸ßµµ²ÍÌüµÃµ½×îºÃµÄ×À×Ó¡£ À§ÄÑÄÑ¶È£ºÔÚÉæ¼°µ½£¨»ò±»ÅÐÓÐ×ï£©Ò»Ãû·¸×ïµ÷²éÔ±Ê±ÈÔµÃµ½ÐÅÓÃ»òÕß´û¿î£»ÔÚ±»Ã½Ìå·Ì°ùºóÈÔµÃµ½ÕýÃæµÄ¹Ø×¢¡£
 ¹Â×¢Ò»÷»µÄÀý×Ó£ºÄãÌá¹©ÄãµÄ·¿×ÓÒÔ¼°/»òÕßÆäËûÓÐ¼ÛÖµµÄ¶«Î÷À´×÷Îª×÷Îªµ£±£´Ó¸ßÀû´ûÕßÄÇ»ñµÃ´û¿î£»Äã³¢ÊÔ¶ÔÒøÐÐ¾­ÀíÊ©Ñ¹À´ÈÃËû¸øÄã´û¿î¡£
 ¹Â×¢Ò»÷»Ê§°ÜµÄ·¶Àý½á¹û£º¸ßÀû´ûÕßµÄÌ¬¶È±äµÃ¶ñÁÓ£¬²¢ÇÒÃüÁîËûµÄÊÖÏÂ¸øÄãÉÏ¡áÁËÒ»¿Î£»ÒøÐÐ¾­Àíºô½ÐÁË¾¯²ì£»Äã´û¿îµ½ÁËÇ®£¬µ«ÊÇÕâÊÇÒ»¸ö²ßÂÔÀ´ÈÃÄãÏÝÈë¸üÉîµÄÕ®ÎñÖÐ£¬²¢ÇÒÓÐ¸ö¶ñÈË¼Æ»®×ÅÊêÂòÄãµÄÕ®Îñ²¢ÇÒÔÚÖ®ºóÒªÇóÄã¸øÓè°ïÖú¡£
@@ -757,7 +758,7 @@ string strRules = string(R"QWQWQ([||Á¦Á¿||STR||]£¨STR£©£ºÍ¶3d6£¬½á¹û³Ë5£¬¼´ÊÇÁ¦Á
 [||¿ñÈÈÕß||]¿ñÈÈÕß ¡ª¡ªÀúÊ·£¬¶þÖÖÉç½»¼¼ÄÜ£¨÷È»ó¡¢»°Êõ¡¢¿ÖÏÅ»òËµ·þ£©£¬ÐÄÀíÑ§£¬Ç±ÐÐ£¬×ÔÑ¡Èý¼¼ÄÜ
 ÐÅÓÃÆÀ¼¶£º0£­30
 ±¾Ö°¼¼ÄÜµã£º½ÌÓýx2£«ÍâÃ²x2»òÒâÖ¾x2
-)QWQWQ" + R"QWQWQ([||¼¼ÄÜ||SKILL||]¼¼ÄÜ±íÏÖÁËÒ»¸ö½ÇÉ«ÔÚÒ»¸öÌØ¶¨µÄÊ±´úÏÂÖªµÀÊ²Ã´£¬²¢ÇÒÄÇÐ©±ê×¢×Å[ÏÖ´ú]µÄ¼¼ÄÜ´ú±í×ÅËüÃÇÖ»ÄÜ±»ÓÃÓÚÏÖ´úÉç»á±³¾°¡£Ò»Ð©¼¼ÄÜ±»¸øÓèÁËÒ»¸öÊôÃû£¬¿ÉÄÜÔÚÄ³Ð©Éè¶¨ÏÂ¿ÉÄÜ»á²»ºÏÊÊ£»±ÈÈç£¬Æû³µ¼ÝÊ»¼¼ÄÜÔÚ±³¾°Éè¶¨ÎªÎ¬¶àÀûÑÇÊ±ÆÚµÄÂ×¶ØÊÇ²»ºÏÊÊµÄ£¬²¢ÇÒÓ¦¸Ã±»ÖØÃüÃûÎªºÏÊÊµÄÃû³Æ¡ª¡ªÔÚÕâÇé¿öÏÂ¿ÉÒÔ¸ÄÎªÂí³µ¼ÝÊ»¡£
+)QWQWQ" + R"QWQWQ([||¼¼ÄÜ||SKILL||]¼¼ÄÜ±íÏÖÁËÒ»¸ö½ÇÉ«ÔÚÒ»¸öÌØ¶¨µÄÊ±´úÏÂÖªµÀÊ²Ã´£¬²¢ÇÒÄÇÐ©±ê×¢×Å¡¾ÏÖ´ú¡¿µÄ¼¼ÄÜ´ú±í×ÅËüÃÇÖ»ÄÜ±»ÓÃÓÚÏÖ´úÉç»á±³¾°¡£Ò»Ð©¼¼ÄÜ±»¸øÓèÁËÒ»¸öÊôÃû£¬¿ÉÄÜÔÚÄ³Ð©Éè¶¨ÏÂ¿ÉÄÜ»á²»ºÏÊÊ£»±ÈÈç£¬Æû³µ¼ÝÊ»¼¼ÄÜÔÚ±³¾°Éè¶¨ÎªÎ¬¶àÀûÑÇÊ±ÆÚµÄÂ×¶ØÊÇ²»ºÏÊÊµÄ£¬²¢ÇÒÓ¦¸Ã±»ÖØÃüÃûÎªºÏÊÊµÄÃû³Æ¡ª¡ªÔÚÕâÇé¿öÏÂ¿ÉÒÔ¸ÄÎªÂí³µ¼ÝÊ»¡£
 ¼¼ÄÜ°Ù·Ö±È²»ÊÇ¶ÔÓÚ¼ÙÏë¿ÉÖªÖªÊ¶ÁË½âµÄ±ÈÀý¡£Èç¹û¿ÉÒÔ½«ÖªÊ¶Ïñ¶Ä²©³ïÂëÒ»Ñù¶ÑÔÚ×À×ÓÉÏÀ´²âÁ¿£¬Ò»¸öÏÖ´úÉç»áµÄ60%µÄÎïÀíÑ§¼¼ÄÜµÄÎïÀíÑ§¼Ò¿Ï¶¨±ÈÒ»¸ö1910ÄêµÄ90%¼¼ÄÜµÄÎïÀíÑ§¼ÒÁË½âµÃ¶à¡£
 Í¬ÑùµÄ£¬Ò»Ð©¼¼ÄÜ½«»áÒòËùÔÚµÄµØÓò¶øÓÐËùÓ°Ïì¡£Ò»¸öÈÕ±¾µÄµ÷²éÔ±¿ÉÒÔÓÐ75%µÄÈÕ±¾·¨ÂÉ¼¼ÄÜ£»È»¶øÈç¹ûÍ¬ÑùµÄµ÷²éÔ±³¢ÊÔÎ÷°àÑÀ·¨ÂÉ£¬ÄÇÃ´KPÒ²Ðí¿ÉÒÔÌá¸ß¼¼ÄÜ¼ì¶¨µÄÄÑ¶È¡£
 Ò»¸ö50%µÄ¼¼ÄÜÒÑ¾­×ã¹»¸ßÀ´ÁîÒ»Ãû½ÇÉ«Æ¾½èÆäÀ´Ä±Éú¡£Èç¹ûÒ»Ãûµ÷²éÔ±½«Ò»¸öÓëËûÖ°Òµ²»Ïà¹ØµÄ¼¼ÄÜÌáÉýµ½×ã¹»¸ß£¬Íæ¼ÒÒÔ¼°KPÒ²Ðí¿ÉÒÔÐ­ÉÌ¸øµ÷²éÔ±»»Ò»¸öÐÂµÄÖ°Òµ¡£
@@ -876,7 +877,7 @@ string strRules = string(R"QWQWQ([||Á¦Á¿||STR||]£¨STR£©£ºÍ¶3d6£¬½á¹û³Ë5£¬¼´ÊÇÁ¦Á
 ¹Â×¢Ò»÷»µÄÀý×Ó£ºÖØÐÂÆÀ¹ÀÕâ´ÎÅÊÅÀ£»ÈÆÔ¶Â·½øÐÐÓØ»ØÅÊÅÀ£»À­×¡Ä³ÈËµÄÊÖ¡£
 ¹Â×¢Ò»÷»Ê§°ÜµÄ·¶Àý½á¹û£º´Ó¸ß´¦Ë¤ÏÂÀ´²¢ÇÒÊÜµ½ÉËº¦£¨Èç¹ûË¤ÔÚ²ÝµØÉÏ£¬1D6ÉËº¦Ã¿10Ó¢³ß£¬Ë¤ÔÚ»ìÄýÍÁÉÏÔòÊÇ1D10ÉËº¦Ã¿10Ó¢³ß£©£»Ä³¼þÓÐ¼ÛÖµµÄ³ÖÓÐÎï´ÓÄãµÄ¿Ú´üÖÐµôÁËÏÂÈ¥£¨Äã¿ÉÄÜÖ±µ½ÊÂºó²Å·¢ÏÖµ½£©£»ÏÝÈëÀ§¾³Ö®ÖÐ£¬ÎÞ·¨¼ÌÐøÉÏÅÀÒ²ÎÞ·¨ÏÂÈ¥¡£
 Èç¹ûÒ»¸ö·è¿ñµÄµ÷²éÔ±ÔÚ¹Â×¢Ò»÷»ÉÏÊ§°Ü£¬Ëû½«È¨Á¦±£×¡×Ô¼º¿É¹óµÄÉúÃü£¬²¢ÇÒ½ß¾¡È«Á¦´óÉù¼â½ÐÖ±µ½½îÆ£Á¦¾¡¡£
-[||¼ÆËã»ú||¼ÆËã»úÊ¹ÓÃ||]¼ÆËã»úÊ¹ÓÃ£¨05%£©[ÏÖ´ú]
+[||¼ÆËã»ú||¼ÆËã»úÊ¹ÓÃ||]¼ÆËã»úÊ¹ÓÃ£¨05%£©¡¾ÏÖ´ú¡¿
 ÕâÏî¼¼ÄÜÔÊÐíµ÷²éÔ±ÓÃ¸÷ÖÖ²»Í¬µÄµçÄÔÓïÑÔ½øÐÐ±à³Ì£»»Ö¸´»òÕß·ÖÎöÒþ²ØµÄÊý¾Ý£»½â³ý±»¼ÓÁË±£»¤µÄÏµÍ³£»Ì½Ë÷Ò»¸ö¸´ÔÓµÄÍøÂç£»»òÕß·¢ÏÖ±ðÈËµÄº§Èë¡¢ºóÃÅ³ÌÐò¡¢²¡¶¾¡£¶ÔµçÄÔÏµÍ³µÄÌØÊâ²Ù×÷¿ÉÄÜ»áÐèÒªÕâ¸ö¼ì¶¨¡£
 »¥ÁªÍø½«´óÁ¿µÄÐÅÏ¢·ÅÖÃÔÚÁËµ÷²éÔ±µÄÖ¸¼âÉÏ¡£
 Ê¹ÓÃ»¥ÁªÍøÀ´ÕÒµ½¸ß¶ÈÏêÏ¸ÒÔ¼°/»òÄ£ºý²»ÇåµÄ×ÉÑ¯¿ÉÄÜ»áÐèÒªÒ»¸ö¼ÆËã»úÊ¹ÓÃºÍÍ¼Êé¹ÝÊ¹ÓÃµÄ×éºÏ¼ì¶¨¡£
@@ -914,7 +915,7 @@ string strRules = string(R"QWQWQ([||Á¦Á¿||STR||]£¨STR£©£ºÍ¶3d6£¬½á¹û³Ë5£¬¼´ÊÇÁ¦Á
 Èç¹ûÒ»¸ö·è¿ñµÄµ÷²éÔ±ÔÚ¹Â×¢Ò»÷»ÉÏÊ§°Ü£¬ÕâÃûµ÷²éÔ±²»ÔÙÄÜÈÏÇå×Ô¼ºÔÚ¾µ×ÓÖÐµÄÁ³£¬¼´Ê¹Î±×°ÒÑ¾­±»³ýÈ¥¡£
 [||Ç±Ë®||]Ç±Ë®£¨01%£©¡¾·Ç³£¹æ¡¿
 Ê¹ÓÃÕß½ÓÊÜ¹ýÔÚÉîº£ÓÎÓ¾µÄÊ¹ÓÃÒÔ¼°Î¬³ÖÇ±Ë®Éè±¸µÄÑµÁ·£¬Ë®ÏÂµ¼º½£¬ºÏÊÊµÄÏÂÇ±ÅäÖØ£¬ÒÔ¼°Ó¦¶Ô½ô¼±Çé¿öµÄ·½·¨¡£
-ÔÚ1942ÄêµÄË®·Î[Ç±Ë®ÑõÆøÍ²]·¢Ã÷Ç°£¬ÑÏ¸ñµÄÇ±Ë®Ì××°ÊÇ×°±¸×ÅÄÜ´ÓË®ÃæÊäËÍ¿ÕÆøµÄÁ¬½Ó¹ÜµÀ¡£
+ÔÚ1942ÄêµÄË®·Î¡¾Ç±Ë®ÑõÆøÍ²¡¿·¢Ã÷Ç°£¬ÑÏ¸ñµÄÇ±Ë®Ì××°ÊÇ×°±¸×ÅÄÜ´ÓË®ÃæÊäËÍ¿ÕÆøµÄÁ¬½Ó¹ÜµÀ¡£
 ÔÚÏÖ´ú£¬Ò»ÃûË®·ÎÇ±Ë®Ô±½«»áÊìÏ¤µ±ºôÎüÔöÑ¹ÑõÆøÊ±·¢ÉúµÄÇ±Ë®Ê±µÄÎïÀíÏÖÏó£¬ÆøÑ¹£¬ÒÔ¼°ÉúÀíÑ§µÄ¹ý³Ì¡£
 ¶Ô¿¹¼¼ÄÜ/ÄÑ¶ÈµÈ¼¶£º ³£¹æÄÑ¶È£ºÊ¹ÓÃÕýÈ·ÒÔ¼°Á¼ºÃÎ¬»¤µÄÉè±¸µÄ³£¹æÇ±Ë®¡£ À§ÄÑÄÑ¶È£ºÔÚÎ£ÏÕµÄ»·¾³ÏÂÇ±Ë®£¬»òÕßÖ»Æ¾½è×Å²»Á¼Î¬»¤µÄÉè±¸¡£
 ¹Â×¢Ò»÷»µÄÀý×Ó£ºÒ»Ö±½øÐÐµ½Éè±¸µÄ¼«ÏÞ³Ì¶È£»ÓÐÌõÀíµØ¶ÔÉè±¸½øÐÐ¸´ºË£»µÃµ½×¨ÒµÈËÊ¿µÄ°ïÖú¡£
@@ -941,7 +942,7 @@ string strRules = string(R"QWQWQ([||Á¦Á¿||STR||]£¨STR£©£ºÍ¶3d6£¬½á¹û³Ë5£¬¼´ÊÇÁ¦Á
 ¹Â×¢Ò»÷»µÄÀý×Ó£º»¨·Ñ¸ü³¤µÄÊ±¼äÀ´ÐÞÀí»òÕß¸Ä×°Éè±¸£»½øÐÐÓÐ·çÏÕµÄ½Ý¾¶ÐÐ¶¯¡£
 ¹Â×¢Ò»÷»Ê§°ÜµÄ·¶Àý½á¹û£ºÒòÎªµç»÷¶øÊÜÉË£»±£ÏÕË¿¶ÏÁË²¢ÇÒÕû×ù½¨ÖþÏÝÈëÁËºÚ°µÖÐ£»½«ÄãÕýÔÚÐÞÀíµÄ¶«Î÷Ëð»µµ½ÁË²»¿ÉÐÞÀíµÄµØ²½¡£
 Èç¹ûÒ»¸ö·è¿ñµÄµ÷²éÔ±ÔÚ¹Â×¢Ò»÷»ÉÏÊ§°Ü£¬Ëû½«³¢ÊÔ½«»îÌåÉúÎïµÄµçÄÜÀûÓÃ½øÉè±¸ÖÐ¡£
-[||µç×ÓÑ§||]µç×ÓÑ§£¨01%£©[ÏÖ´ú]
+[||µç×ÓÑ§||]µç×ÓÑ§£¨01%£©¡¾ÏÖ´ú¡¿
 ÓÃÀ´·¢ÏÖ²¢¶Ôµç×ÓÉè±¸µÄ¹ÊÕÏ½øÐÐÎ¬ÐÞ¡£ÔÊÐíÖÆ×÷¼òµ¥µÄµç×ÓÉè±¸¡£ÕâÊÇ¸öÏÖ´ú¼¼ÄÜ¡ªÔÚ1920Äê´úÔòÊÇÊ¹ÓÃÎïÀíÑ§ÒÔ¼°µçÆøÎ¬ÐÞÀ´Ó¦¶Ôµç×ÓÉè±¸¡£
 ²»ÏñµçÆøÎ¬ÐÞ¼¼ÄÜ£¬µç×ÓÑ§¹¤×÷µÄ²¿¼þÍ¨³£ÊÇ²»ÄÜÁÙÊ±Åä±¸µÄ£ºËüÃÇÍ¨¹ý¾«ÃÜµÄ¹¤×÷±»Éè¼Æ³öÀ´¡£Í¨³£Èç¹ûÃ»ÓÐÕýÈ·µÄÎ¢¾§Æ¬»òÕßµçÂ·°å£¬¼¼ÄÜµÄÊ¹ÓÃÕß¾ÍÎÞ·¨½øÐÐ¹¤×÷£¬³ý·ÇËûÃÇ¿ÉÒÔ²ß»®³öÒ»Ð©ÐÎÊ½µÄÓ¦¼±·½°¸¡£
 ¶Ô¿¹¼¼ÄÜ/ÄÑ¶ÈµÈ¼¶£º
@@ -1196,7 +1197,7 @@ KP¿ÉÒÔ½«Õâ¸ö¼¼ÄÜµÄ¼ì¶¨×÷ÎªÒþ²Ø÷»½øÐÐ´¦Àí¡ªµ÷²éÔ±ÐèÒª³¢ÊÔÈ¥½â¾öµÄÒ»¼þÊÂÇé£¬²¢ÇÒ×î
 [||ÌìÎÄÑ§||ÌìÎÄ||]ÌìÎÄÑ§£¨01%£©£ºÊ¹ÓÃÕß¿ÉÒÔÖªµÀÔÚÄ³¸öÌØ¶¨µÄÈÕ×Ó»òÕßÒ»ÌìÔçÍíÄ³¸öÊ±¼äÊ±ÄÄ¿ÅºãÐÇ»òÕßÐÐÐÇÎ»ÓÚÕýÉÏ·½£¬ºÎÊ±åçÐÇºÍÁ÷ÐÇÓê»á³öÏÖ£¬ÒÔ¼°ÖØÒªµÄºãÐÇµÄÃû×Ö¡£ÕâÏî¼¼ÄÜÍ¬Ñù»áÌá¹©ÓÐ¹ØÆäËûÊÀ½çµÄÉúÃü£¬ÒøºÓµÄ´æÔÚºÍ½á¹¹£¬ÒÔ¼°ÀàËÆµÄÖªÊ¶µÄÏÖ´ú¸ÅÄî¡£Ò»ÃûÑ§Õß¿ÉÄÜÄÜ¹»¼ÆËã¹ìµÀ£¬ÅÐ¶ÏºãÐÇÉúÃüÖÜÆÚ£¬ÒÔ¼°£¨ÔÚÏÖ´ú£©ÓÐ¹ØºìÍâÌìÎÄÑ§»òÕß³¬³¤»ùÏß¸ÉÉæ²âÁ¿µÄÏà¹ØÖªÊ¶¡£
 [||ÉúÎïÑ§||ÉúÎï||]ÉúÎïÑ§£¨01%£©£º¹ØÓÚÉúÃüºÍ´æ»îµÄÓÐ»úÎïµÄÑ§¿Æ£¬°üÀ¨Ï¸°ûÑ§¡¢ÉúÌ¬Ñ§¡¢»ùÒòÑ§¡¢×éÖ¯Ñ§¡¢Î¢¹ÛÉúÎïÑ§¡¢ÉúÀíÑ§µÈµÈ¡£ÔÚÕâÏî¼¼ÄÜµÄ°ïÖúÏÂ£¬Ò»¸öÈË¿ÉÄÜÄÜ¹»ÑÐ¾¿³öÄÜ¹»¶Ô¿¹¿ÉÅÂµÄ¿ËËÕÂ³Éñ»°Ï¸¾úµÄÒßÃç£¬½«×Ô¼º´ÓÄÜ¹»ÁîÈË²úÉú»Ã¾õµÄ´ÔÁÖÖ²ÎïÏÂ¸ôÀë¿ªÀ´£¬»òÕß¶ÔÏÊÑªÒÔ¼°/»òÕßÓÐ»úÎïÖÊ½øÐÐ·ÖÎö¡£
 [||Ö²ÎïÑ§||]Ö²ÎïÑ§£¨01%£©£º¹ØÓÚÖ²ÎïÉúÃüµÄÑÐ¾¿£¬°üÀ¨ÎïÖÖ·ÖÀà£¬½á¹¹£¬Éú³¤£¬·±Ö³£¬»¯Ñ§ÌØÐÔ£¬½ø»¯Ô­Àí£¬¼²²¡£¬ÒÔ¼°ÏÔÎ¢ÑÐ¾¿¡£Ö²ÎïÑ§µÄ·ÖÖ§Ñ§¿Æ°üÀ¨Å©Ñ§£¬É­ÁÖÑ§£¬Ô°ÒÕºÍ¹ÅÖ²ÎïÑ§¡£ÔÚÕâÏî¼¼ÄÜµÄ°ïÖúÏÂ£¬Ä³ÈË¿ÉÒÔ±æÈÏ³öÄ³ÖÖÌØ¶¨Ö²ÎïµÄÌØÐÔ£¨ÀýÈçÊÇ·ñÓÐ¶¾ÐÔ£¬ÊÇ·ñ¿ÉÊ³ÓÃ£¬»òÕß¾ßÓÐ¾«ÉñÖÎÁÆ×÷ÓÃ£©ÒÔ¼°ËüµÄ¾ßÌåÓÃ´¦¡£
-[||»¯Ñ§||]»¯Ñ§£¨01%£©£ºÓÐ¹ØÎïÖÊ×é³É£¬ÎÂ¶ÈµÄÓ°Ïì£¬ÄÜÁ¿£¬ÒÔ¼°×÷ÓÃÓÚÆäÉÏµÄÑ¹Á¦µÄÑÐ¾¿£¬Ò²°üÀ¨ÎïÖÊÈçºÎ»¥ÏàÓ°Ïì¡£ÔÚ»¯Ñ§µÄ°ïÖúÏÂ£¬Ä³ÈË¿ÉÒÔ´´Ôì»òÕßÌáÈ¡¸´ÔÓµÄ»¯Ñ§¸´ºÏÎï£¬°üÀ¨¼òµ¥µÄÕ¨Ò©£¬¶¾Ò©£¬ÆøÌåÒÔ¼°ËáÒº£¬ÐèÒªÖÁÉÙÒ»ÌìÒÔÉÏ²¢ÇÒÔÚºÏÊÊµÄÉè±¸ÒÔ¼°»¯Ñ§Ò©¼ÁµÄ°ïÖú¡£Ê¹ÓÃÕßÒ²¿ÉÒÔ¶ÔÒ»ÖÖ²»Ã÷µÄÎïÖÊ½øÐÐ·ÖÎö£¬Èç¹ûÓÐÕâºÏÊÊµÄÉè±¸ÒÔ¼°ÊÔ¼Á¡£
+[||»¯Ñ§||]»¯Ñ§£¨01%£©£ºÓÐ¹ØÎïÖÊ×é³É£¬ÎÂ¶ÈµÄÓ°Ïì£¬ÄÜÁ¿£¬ÒÔ¼°×÷ÓÃÓÚÆäÉÏµÄÑ¹Á¦µÄÑÐ¾¿£¬Ò²°üÀ¨ÎïÖÊÈçºÎ»¥ÏàÓ°Ïì¡£ÔÚ»¯Ñ§µÄ°ïÖúÏÂ£¬Ä³ÈË¿ÉÒÔ´´Ôì»òÕßÌáÈ¡¸´ÔÓµÄ»¯Ñ§¸´ºÏÎï£¬°üÀ¨¼òµ¥µÄÕ¨Ò©£¬¶¾Ò©£¬ÆøÌåÒÔ¼°ËáÒº£¬ÐèÒªÖÁÉÙÒ»ÌìÒÔÉÏ²¢ÇÒÔÚºÏÊÊµÄÉè±¸ÒÔ¼°»¯Ñ§Ò©¼ÁµÄ°ïÖú¡£Ê¹ÓÃÕßÒ²¿ÉÒÔ¶ÔÒ»ÖÖ²»Ã÷µÄÎïÖÊ½øÐÐ·ÖÎö£¬Èç¹ûÓÐ×ÅºÏÊÊµÄÉè±¸ÒÔ¼°ÊÔ¼Á¡£
 [||ÃÜÂëÑ§||ÃÜÂë||]ÃÜÂëÑ§£¨01%£©£º¹ØÓÚÓÉÆäËûÈË·¢Õ¹³öÀ´µÄÓÃÓÚÒþ²Ø¶Ô»°»òÕßÐÅÏ¢ÄÚÈÝÓÃµÄ°µÂë»òÕßÃÜÓïµÄÑÐ¾¿¡£Ò»ÖÖÊýÑ§µÄ×¨Òµ·ÖÖ§£¬ÕâÏî¼¼ÄÜÊ¹Ê¹ÓÃÕßÄÜ¹»±æÈÏ£¬´´Ôì»òÆÆÒë°µÂë¡£°µÂëÍ¨³£ÉÏÀ´ËµÊÇÐ´ÏÂÀ´µÄ£¬µ«Ò²¿ÉÄÜÍ¨¹ýÆäËûµÄÐÎÊ½£¬ÀýÈçÒþ²ØÔÚÀÖÇú¡¢»­×÷»òÕßµçÄÔ±àÂë£¨ÔÚÏÖ´úÉè¶¨ÏÂ£©ÏÂµÄÐÅÏ¢¡£ÆÆÒëÒ»¸ö°µÂë¿ÉÄÜ»áÊÇÒ»¸öÂþ³¤µÄ¹¤×÷£¬Í¨³£ÐèÒªºÜ³¤Ê±¼äµÄµ÷²éÑÐ¾¿ÒÔ¼°´óÁ¿µÄÑÝËã´¦Àí¡£
 [||¹¤³ÌÑ§||¹¤³Ì||]¹¤³ÌÑ§£¨01%£©£º¾¡¹ÜÑÏ¸ñÉÏÀ´ËµÕâ²¢²»ÊÇ¿ÆÑ§£¬µ«ÊÇÎªÁË·½±ã¹éµ½ÁËÕâÀï¡£¿ÆÑ§ÊÇÓë±æÈÏÌØ¶¨µÄÏÖÏóÏà¹Ø£¨Í¨¹ý¹Û²ìºÍ¼ÇÂ¼£©¡£È»¶ø¹¤³ÌÑ§½«ÕâÐ©·¢ÏÖÀûÓÃÆðÀ´½øÐÐÊµ¼ÊÀûÓÃ£¬ÀýÈç»úÆ÷£¬½á¹¹£¬ÒÔ¼°²ÄÁÏ¡£
 [||Ë¾·¨¿ÆÑ§||Ë¾·¨||]Ë¾·¨¿ÆÑ§£¨01%£©£º¶ÔÓÚÖ¤¾ÝµÄ·ÖÎöºÍ¼ì¶¨µÄÑÐ¾¿¡£Í¨³£Óë·¸×ïÏÖ³¡µ÷²é£¨¼ìÑéÖ¸ÎÆ¡¢DNA¡¢Í··¢ÒÔ¼°ÌåÒº£©ºÍÊµÑéÊÒ¹¤×÷ÏàÁªÏµ£¬ÒÔ´ËÀ´È·¶¨ÕæÏàÒÔ¼°Îª·¨Í¥ÕùÂÛÌá¹©×¨ÒµµÄÖ¤ÈËºÍÖ¤¾Ý¡£
@@ -1272,7 +1273,7 @@ KP¿ÉÒÔ½«Õâ¸ö¼¼ÄÜµÄ¼ì¶¨×÷ÎªÒþ²Ø÷»½øÐÐ´¦Àí¡ªµ÷²éÔ±ÐèÒª³¢ÊÔÈ¥½â¾öµÄÒ»¼þÊÂÇé£¬²¢ÇÒ×î
 ¼Ç×¡ÏëÒªÁÐ³öËùÓÐ¿ÉÄÜµÄÓïÏµÊÇ²»¿ÉÄÜµÄ£¬²¢ÇÒÑ¡ÔñÊ¹ÓÃÕâ¸ö¹æÔòµÄKP½¨Òé²Î¿¼±ê×¼µÄ°Ù¿ÆÈ«ÊéÉÏµÄÌõÄ¿À´ÅÐ¶Ï¡°ÓïÏµ¡±¡£
 (»ñµÃÏêÏ¸ÐÅÏ¢ÇëÊ¹ÓÃ.rules Ä¸ÓïºÍ.rules ÆäËûÓïÑÔ)
 [||ÄÑ¶ÈµÈ¼¶||]¼¼ÄÜ¼ì¶¨£º¾ö¶¨ÄÑ¶ÈµÈ¼¶
-ÊØÃØÈË¾ö¶¨¼¼ÄÜ¼ì¶¨µÄÄÑ¶ÈµÈ¼¶¡£27T¡¶¿ËËÕÂ³µÄÕÙ»½¡·27T¹æÔòÓÐÈýÖÖÄÑ¶ÈµÈ¼¶£º³£¹æ¡¢À§ÄÑºÍ¼«ÄÑ¡£
+ÊØÃØÈË¾ö¶¨¼¼ÄÜ¼ì¶¨µÄÄÑ¶ÈµÈ¼¶¡£¡¶¿ËËÕÂ³µÄÕÙ»½¡·¹æÔòÓÐÈýÖÖÄÑ¶ÈµÈ¼¶£º³£¹æ¡¢À§ÄÑºÍ¼«ÄÑ¡£
 ³£¹æÄÑ¶ÈµÈ¼¶£º¶ÔÊ¤ÈÎÕß¹¹³ÉÌôÕ½µÄÒ»°ãÇéÐÎ¡£Íæ¼ÒÐèÒª÷»³öÐ¡ÓÚµÈÓÚËûÏàÓ¦¼¼ÄÜ»òÊôÐÔµÄµãÊýÒÔÍ¨¹ý¼ì¶¨¡£¾ø´ó²¿·ÖÇé¿ö¶¼Ó¦µ±Ê¹ÓÃ´ËÄÑ¶ÈµÈ¼¶¡£
 À§ÄÑÄÑ¶ÈµÈ¼¶£ºÕâÒ»ÈÎÎñ¶Ô×¨ÒµÈËÊ¿¹¹³ÉÌôÕ½¡£Íæ¼ÒÐèÒª÷»³öÐ¡ÓÚµÈÓÚËûÏàÓ¦¼¼ÄÜ»òÊôÐÔµÄµãÊýµÄÒ»°ëÒÔÍ¨¹ý¼ì¶¨¡£Ó¦µ±½ö½öÅ¼¶ûÊ¹ÓÃ´ËÄÑ¶ÈµÈ¼¶¡£
 ¼«ÄÑÄÑ¶ÈµÈ¼¶£ºÕâÒ»ÈÎÎñ¶Ô×¨¼Ò¹¹³ÉÌôÕ½£»ÕâÒÑ¾­´¥¼°ÈËÀàµÄ¿ÉÄÜÐÔµÄ±ß½ç¡£Íæ¼ÒÐèÒª÷»³öÐ¡ÓÚµÈÓÚËûÏàÓ¦¼¼ÄÜ»òÊôÐÔµÄµãÊýµÄÎå·ÖÖ®Ò»ÒÔÍ¨¹ý¼ì¶¨¡£´ËÄÑ¶ÈµÈ¼¶Ó¦µ±±£Áôµ½¼«¶ËÇéÐÎ¡£
@@ -1439,8 +1440,8 @@ KP¿ÉÒÔ½«Õâ¸ö¼¼ÄÜµÄ¼ì¶¨×÷ÎªÒþ²Ø÷»½øÐÐ´¦Àí¡ªµ÷²éÔ±ÐèÒª³¢ÊÔÈ¥½â¾öµÄÒ»¼þÊÂÇé£¬²¢ÇÒ×î
 1) Ê§Òä£ºµ÷²éÔ±»á·¢ÏÖ×Ô¼ºÖ»¼ÇµÃ×îºóÉí´¦µÄ°²È«µØµã£¬È´Ã»ÓÐÈÎºÎÀ´µ½ÕâÀïµÄ¼ÇÒä¡£ÀýÈç£¬µ÷²éÔ±Ç°Ò»¿Ì»¹ÔÚ¼ÒÖÐ³Ô×ÅÔç·¹£¬ÏÂÒ»¿Ì¾ÍÒÑ¾­Ö±Ãæ×Å²»ÖªÃûµÄ¹ÖÎï¡£Õâ½«»á³ÖÐø1D10ÂÖ¡£
 2) ¼ÙÐÔ²Ð¼²£ºµ÷²éÔ±ÏÝÈëÁËÐÄÀíÐÔµÄÊ§Ã÷£¬Ê§´ÏÒÔ¼°ÇûÌåÈ±Ê§¸ÐÖÐ£¬³ÖÐø1D10ÂÖ¡£
 3) ±©Á¦ÇãÏò£ºµ÷²éÔ±ÏÝÈëÁËÁùÇ×²»ÈÏµÄ±©Á¦ÐÐÎªÖÐ£¬¶ÔÖÜÎ§µÄµÐÈËÓëÓÑ·½½øÐÐ×ÅÎÞ²î±ðµÄ¹¥»÷£¬³ÖÐø1D10ÂÖ¡£
-4) Æ«Ö´£ºµ÷²éÔ±ÏÝÈëÁËÑÏÖØµÄÆ«Ö´ÍýÏëÖ®ÖÐ£¬³ÖÐø£±£Ä£±£°ÂÖ¡£ÓÐÈËÔÚ°µÖÐ¿úÊÓ×ÅËûÃÇ£¬Í¬°éÖÐÓÐÈË±³ÅÑÁËËûÃÇ£¬Ã»ÓÐÈË¿ÉÒÔÐÅÈÎ£¬ÍòÊÂ½ÔÐé¡£
-5) ÈË¼ÊÒÀÀµ£ºÊØÃØÈËÊÊµ±²Î¿¼µ÷²éÔ±µÄ±³¾°ÖÐÖØÒªÖ®ÈËµÄÌõÄ¿£¬µ÷²éÔ±ÒòÎªÒ»Ð©Ô­Òò¶ø½µËûÈËÎóÈÏÎªÁËËûÖØÒªµÄÈË²¢ÇÒÅ¬Á¦µÄ»áÓëÄÇ¸öÈË±£³ÖÄÇÖÖ¹ØÏµ£¬³ÖÐø1D10ÂÖ
+4) Æ«Ö´£ºµ÷²éÔ±ÏÝÈëÁËÑÏÖØµÄÆ«Ö´ÍýÏëÖ®ÖÐ£¬³ÖÐø1D10ÂÖ¡£ÓÐÈËÔÚ°µÖÐ¿úÊÓ×ÅËûÃÇ£¬Í¬°éÖÐÓÐÈË±³ÅÑÁËËûÃÇ£¬Ã»ÓÐÈË¿ÉÒÔÐÅÈÎ£¬ÍòÊÂ½ÔÐé¡£
+5) ÈË¼ÊÒÀÀµ£ºÊØÃØÈËÊÊµ±²Î¿¼µ÷²éÔ±µÄ±³¾°ÖÐÖØÒªÖ®ÈËµÄÌõÄ¿£¬µ÷²éÔ±ÒòÎªÒ»Ð©Ô­Òò¶ø½«ËûÈËÎóÈÏÎªÁËËûÖØÒªµÄÈË²¢ÇÒÅ¬Á¦µÄ»áÓëÄÇ¸öÈË±£³ÖÄÇÖÖ¹ØÏµ£¬³ÖÐø1D10ÂÖ
 6) »èØÊ£ºµ÷²éÔ±µ±³¡»èµ¹£¬²¢ÐèÒª1D10ÂÖ²ÅÄÜËÕÐÑ¡£.
 7) ÌÓ±ÜÐÐÎª£ºµ÷²éÔ±»áÓÃÈÎºÎµÄÊÖ¶ÎÊÔÍ¼ÌÓÀëÏÖÔÚËù´¦µÄÎ»ÖÃ£¬¼´Ê¹ÕâÒâÎ¶×Å¿ª×ßÎ¨Ò»Ò»Á¾½»Í¨¹¤¾ß²¢½«ÆäËüÈËÅ×ÖîÄÔºó£¬µ÷²éÔ±»áÊÔÍ¼ÌÓÀë1D10ÂÖ¡£
 8) ½ßË»µ×Àï£ºµ÷²éÔ±±íÏÖ³ö´óÐ¦£¬¿ÞÆü£¬Ë»ºð£¬º¦ÅÂµÈµÄ¼«¶ËÇéÐ÷±íÏÖ£¬³ÖÐø1D10ÂÖ¡£
