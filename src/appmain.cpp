@@ -1,4 +1,4 @@
-﻿#include <windows.h>
+#include <windows.h>
 #include <string>
 #include <map>
 #include <set>
@@ -20,6 +20,7 @@ struct RP {
 	string Date;
 };
 map<long long, RP> JRRP;
+map<long long, string> Default;
 map<pair<long long, long long>, string> GroupName;
 map<pair<long long, long long>, string> DiscussName;
 set<long long> DisabledGroup;
@@ -28,6 +29,8 @@ set<long long> DisabledJRRPGroup;
 set<long long> DisabledJRRPDiscuss;
 set<long long> DisabledMEGroup;
 set<long long> DisabledMEDiscuss;
+set<long long> DisabledOBGroup;
+set<long long> DisabledOBDiscuss;
 multimap<long long, long long> ObserveGroup;
 multimap<long long, long long> ObserveDiscuss;
 
@@ -43,20 +46,23 @@ R"(欢迎使用Dice!机器人,下面列出了本机器人的全部命令:
 	其中，掷骰中的命令包括(以下命令执行方式为.o/r/d/rd/h/rh 命令):	
 		COC6             COC6版人物作成
 		COC7             COC7版人物作成
-		DND              DND英雄做成
+		COC6S [个数]     COC6版人物作成简版
+		COC7S [个数]     COC7版人物作成简版
+		DND [个数]       DND英雄做成
 		不定性疯狂/LI     不定性疯狂
 		临时性疯狂/TI     临时疯狂
 		Bx               D100奖励骰(x为奖励骰个数,如.o B2,B与x之间无空格)
 		Px               D100惩罚骰(x为惩罚骰个数,如.o P2,P与x之间无空格)
 	.nn 名称/del          设置及删除昵称
 	.bot [on/off] [QQ号]       机器人控制命令:直接输入为查看状态
-	.ob [exit/list/clr]        只输入.ob为加入旁观模式,该群中的所有暗骰信息会私聊发给你
+	.ob [exit/list/clr/on/off]        只输入.ob为加入旁观模式,该群中的所有暗骰信息会私聊发给你
 	.sc 所扣San值 当前San值     自动Sancheck,所扣San值的格式是"成功扣San/失败扣San" 如.sc 1/1d6 55
 	.me on/off/动作 (群/多人聊天)或.me 群号 动作 (私聊)  以第三方视角做出动作
 	.jrrp [on/off]             今日人品检定
 	.rules 关键字               COC7规则查询
+	.set [表达式]       设置默认骰子类型
 	.help     	                获取帮助        
-版本:1.6.0
+版本:1.6.1
 本软件遵循GPLv3开源协议,作者w4123,问题反馈/交流/查看源代码请加QQ群624807593)";
 
 
@@ -157,6 +163,22 @@ EVE_Startup(startUp) {
 		}
 	}
 	ifstreamDisabledMEDiscuss.close();
+	ifstream ifstreamDisabledOBGroup(strFileLoc + "DisabledOBGroup.config");
+	if (ifstreamDisabledOBGroup) {
+		long long Group;
+		while (ifstreamDisabledOBGroup >> Group) {
+			DisabledOBGroup.insert(Group);
+		}
+	}
+	ifstreamDisabledOBGroup.close();
+	ifstream ifstreamDisabledOBDiscuss(strFileLoc + "DisabledOBDiscuss.config");
+	if (ifstreamDisabledOBDiscuss) {
+		long long Discuss;
+		while (ifstreamDisabledOBDiscuss >> Discuss) {
+			DisabledOBDiscuss.insert(Discuss);
+		}
+	}
+	ifstreamDisabledOBDiscuss.close();
 	ifstream ifstreamObserveGroup(strFileLoc + "ObserveGroup.config");
 	if (ifstreamObserveGroup) {
 		long long Group,QQ;
@@ -175,16 +197,25 @@ EVE_Startup(startUp) {
 	}
 	ifstreamObserveDiscuss.close();
 	ifstream ifstreamJRRP(strFileLoc + "JRRP.config");
-		if (ifstreamJRRP) {
-			long long QQ;
-			int Val;
-			string strDate;
-			while (ifstreamJRRP >> QQ >> strDate >> Val) {
-				JRRP[QQ].Date = strDate;
-				JRRP[QQ].RPVal = Val;
-			}
+	if (ifstreamJRRP) {
+		long long QQ;
+		int Val;
+		string strDate;
+		while (ifstreamJRRP >> QQ >> strDate >> Val) {
+			JRRP[QQ].Date = strDate;
+			JRRP[QQ].RPVal = Val;
 		}
+	}
 	ifstreamJRRP.close();
+	ifstream ifstreamDefault(strFileLoc + "Default.config");
+	if (ifstreamDefault) {
+		long long QQ;
+		string DefVal;
+		while (ifstreamDefault >> QQ >> DefVal) {
+			Default[QQ] = DefVal;
+		}
+	}
+	ifstreamDefault.close();
 	return 0;
 }
 
@@ -257,16 +288,16 @@ EVE_GroupMsg_EX(groupMsg) {
 		
 		//Save the Reason
 		string strReason;
-		
 		//Get the Second Input
-		strSecondInput += eve.message.substr(intMsgCnt, eve.message.find(" ", intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(" ", intMsgCnt) - intMsgCnt);
+		string strTmp = eve.message.substr(intMsgCnt, eve.message.find(" ", intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(" ", intMsgCnt) - intMsgCnt);
+		if (strSecondInput != "")strReason += strTmp; else strSecondInput += strTmp;
 		string strSecondInputCopy = strSecondInput;
 		//Toupper the second input
 		for (auto &i : strSecondInput)if (islower(i))i = toupper(i);
 
 		//Make the intMsgCnt jump to the space after the second input
 		intMsgCnt = eve.message.find(" ", intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(" ", intMsgCnt);
-
+		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
 		//Check if it is a "hidden dice"
 		bool isHidden = false;
 		if (strFirstInput==".h"||strFirstInput == ".rh")isHidden = true;
@@ -274,8 +305,14 @@ EVE_GroupMsg_EX(groupMsg) {
 		//Save the number or dice before # to get the time of rolling dice
 		int intRollDiceTime = 0;
 		if (strSecondInput.find("#") != string::npos) {
-			if (MainRoll(intRollDiceTime, strSecondInput.substr(0, strSecondInput.find("#"))) == -1 || intRollDiceTime <= 0) {
+			int intTmpRDRes = MainRoll(intRollDiceTime, strSecondInput.substr(0, strSecondInput.find("#")));
+			if (intTmpRDRes == -1 || intRollDiceTime <= 0) {
 				sendGroupMsg(eve.fromGroup, strErrMsg);
+				eve.message_block();
+				return;
+			}
+			else if (intTmpRDRes == -2) {
+				sendGroupMsg(eve.fromGroup,ImagePack());
 				eve.message_block();
 				return;
 			}
@@ -324,7 +361,7 @@ EVE_GroupMsg_EX(groupMsg) {
 
 				//If is hidden, send a private msg instead of a group one
 				if (isHidden) {
-					strMAns = "在群" + strGroupName + "中" + strMAns;
+					strMAns = "在群\"" + strGroupName + "\"中 " + strMAns;
 					sendPrivateMsg(eve.fromQQ, strMAns);
 					auto Range = ObserveGroup.equal_range(eve.fromGroup);
 					for (auto it = Range.first; it != Range.second; ++it) {
@@ -345,7 +382,7 @@ EVE_GroupMsg_EX(groupMsg) {
 
 				//If is hidden, send a private msg instead of a group one
 				if (isHidden) {
-					strMAns = "在群" + strGroupName + "中" + strMAns;
+					strMAns = "在群\"" + strGroupName + "\"中 " + strMAns;
 					sendPrivateMsg(eve.fromQQ, strMAns);
 					auto Range = ObserveGroup.equal_range(eve.fromGroup);
 					for (auto it = Range.first; it != Range.second; ++it) {
@@ -369,16 +406,30 @@ EVE_GroupMsg_EX(groupMsg) {
 			}
 			else if (strSecondInput=="DND"||strSecondInput=="英雄作成"||strSecondInput=="英雄做成"||strSecondInput=="英雄制作") {
 				//DND
-				
+				string strNum = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+				for (const auto i : strNum)
+					if (!isdigit(i)) {
+						sendGroupMsg(eve.fromGroup, "人物作成次数输入不正确!");
+						eve.message_block();
+						return;
+					}
+				int intNum = 0;
+				intNum = Str2Int(strNum);
+				if (strNum == "")intNum = 1;
+				if (intNum > 10 || intNum <= 0) {
+					sendGroupMsg(eve.fromGroup, "人物作成次数超过了最大限制10次!");
+					eve.message_block();
+					return;
+				}
 				//Save the result of DND
-				string strMAns = strNickName + "的英雄做成:\n";
+				string strMAns = strNickName + "的英雄做成:";
 
 				//Call the DND roll dice function
-				DND(strMAns);
+				DND(strMAns,intNum);
 
 				//If is hidden, send a private msg instead of a group one
 				if (isHidden) {
-					strMAns = "在群" + strGroupName + "中" + strMAns;
+					strMAns = "在群\"" + strGroupName + "\"中 " + strMAns;
 					sendPrivateMsg(eve.fromQQ, strMAns);
 					auto Range = ObserveGroup.equal_range(eve.fromGroup);
 					for (auto it = Range.first; it != Range.second; ++it) {
@@ -420,10 +471,10 @@ EVE_GroupMsg_EX(groupMsg) {
 				if (intMsgCnt != eve.message.length() && w == 0)strReason = eve.message.substr(intMsgCnt);
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "由于" + strReason + strAns;
+					strAns = "由于" + strReason + " " + strAns;
 				}
 				if (isHidden) {
-					strAns = "在群" + strGroupName + "中" + strAns;
+					strAns = "在群\"" + strGroupName + "\"中 " + strAns;
 					sendPrivateMsg(eve.fromQQ, strAns);
 					auto Range = ObserveGroup.equal_range(eve.fromGroup);
 					for (auto it = Range.first; it != Range.second; ++it) {
@@ -466,10 +517,10 @@ EVE_GroupMsg_EX(groupMsg) {
 				if (intMsgCnt != eve.message.length() && w == 0)strReason = eve.message.substr(intMsgCnt);
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "由于" + strReason + strAns;
+					strAns = "由于" + strReason + " " + strAns;
 				}
 				if (isHidden) {
-					strAns = "在群" + strGroupName + "中" + strAns;
+					strAns = "在群\"" + strGroupName + "\"中 " + strAns;
 					sendPrivateMsg(eve.fromQQ, strAns);
 					auto Range = ObserveGroup.equal_range(eve.fromGroup);
 					for (auto it = Range.first; it != Range.second; ++it) {
@@ -479,11 +530,78 @@ EVE_GroupMsg_EX(groupMsg) {
 				else
 					sendGroupMsg(eve.fromGroup, strAns);
 			}
+			else if (strSecondInput == "COC7S") {
+
+				string strNum= eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+				for (const auto i : strNum)
+					if (!isdigit(i)) {
+						sendGroupMsg(eve.fromGroup, "人物作成次数输入不正确!");
+						eve.message_block();
+						return;
+					}
+				int intNum = 0;
+				intNum = Str2Int(strNum);
+				if (strNum == "")intNum = 1;
+				if (intNum > 10 || intNum <= 0) {
+					sendGroupMsg(eve.fromGroup, "人物作成次数超过了最大限制10次!");
+					eve.message_block();
+					return;
+				}
+				string strMAns = strNickName;
+
+				//Call the COC7 roll dice function
+				COC7S(strMAns,intNum);
+
+				//If is hidden, send a private msg instead of a group one
+				if (isHidden) {
+					strMAns = "在群\"" + strGroupName + "\"中 " + strMAns;
+					sendPrivateMsg(eve.fromQQ, strMAns);
+					auto Range = ObserveGroup.equal_range(eve.fromGroup);
+					for (auto it = Range.first; it != Range.second; ++it) {
+						if (it->second != eve.fromQQ)sendPrivateMsg(it->second, strMAns);
+					}
+				}
+				else
+					sendGroupMsg(eve.fromGroup, strMAns);
+			}
+			else if (strSecondInput == "COC6S") {
+				string strNum = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+				for (const auto i : strNum)
+					if (!isdigit(i)) {
+						sendGroupMsg(eve.fromGroup, "人物作成次数输入不正确!");
+						eve.message_block();
+						return;
+					}
+				int intNum = 0;
+				intNum = Str2Int(strNum);
+				if (strNum == "")intNum = 1;
+				if (intNum > 10 || intNum <= 0) {
+					sendGroupMsg(eve.fromGroup, "人物作成次数超过了最大限制10次!");
+					eve.message_block();
+					return;
+				}
+				string strMAns = strNickName;
+
+				//Call the COC7 roll dice function
+				COC6S(strMAns, intNum);
+
+				//If is hidden, send a private msg instead of a group one
+				if (isHidden) {
+					strMAns = "在群\"" + strGroupName + "\"中 " + strMAns;
+					sendPrivateMsg(eve.fromQQ, strMAns);
+					auto Range = ObserveGroup.equal_range(eve.fromGroup);
+					for (auto it = Range.first; it != Range.second; ++it) {
+						if (it->second != eve.fromQQ)sendPrivateMsg(it->second, strMAns);
+					}
+				}
+				else
+					sendGroupMsg(eve.fromGroup, strMAns);
+			}
 			else {
 
 				for (int k = 0; k != strSecondInput.length(); k++) {
 					if (!isprint(strSecondInput[k]) || (!isdigit(strSecondInput[k])&& strSecondInput[k]!='-'&&strSecondInput[k]!='+' && strSecondInput[k] != 'D') || (strSecondInput[k] == 'D' && !isdigit(strSecondInput[k + 1]))) {
-						strReason += strSecondInputCopy.substr(k);
+						strReason = strSecondInputCopy.substr(k) + strReason;
 						strSecondInput = strSecondInput.substr(0, k);
 						strSecondInputCopy = strSecondInput.substr(0, k);
 						break;
@@ -496,7 +614,7 @@ EVE_GroupMsg_EX(groupMsg) {
 				}
 				
 				//Default Dice
-				if (strSecondInput == "")strSecondInput = "D100";
+				if (strSecondInput == "")strSecondInput = Default.count(eve.fromQQ) ? Default[eve.fromQQ] : "D100";
 
 				//Output string, save the main answer
 				string strAns = strNickName + "骰出了: " + strSecondInput + "=";
@@ -516,6 +634,11 @@ EVE_GroupMsg_EX(groupMsg) {
 					eve.message_block();
 					return;
 				}
+				else if (intRollRes == -2) {
+					sendGroupMsg(eve.fromGroup, ImagePack());
+					eve.message_block();
+					return;
+				}
 
 				//Skip the space
 				while (eve.message[intMsgCnt] == ' '&&intMsgCnt != eve.message.length())intMsgCnt++;
@@ -527,7 +650,7 @@ EVE_GroupMsg_EX(groupMsg) {
 				
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "由于" + strReason + strAns;
+					strAns = "由于" + strReason + " " + strAns;
 				}
 
 				//Avoid Repeat Result
@@ -546,7 +669,7 @@ EVE_GroupMsg_EX(groupMsg) {
 
 				//If is hidden, send a private msg instead of a group one
 				if (isHidden) {
-					strAns = "在群" + strGroupName + "中" + strAns;
+					strAns = "在群\"" + strGroupName + "\"中 " + strAns;
 					sendPrivateMsg(eve.fromQQ, strAns);
 					auto Range = ObserveGroup.equal_range(eve.fromGroup);
 					for (auto it = Range.first; it != Range.second; ++it) {
@@ -588,6 +711,21 @@ EVE_GroupMsg_EX(groupMsg) {
 				sendGroupMsg(eve.fromGroup, "名称不能为空!");
 			}
 		}
+		eve.message_block();
+		return;
+	}
+	else if (strFirstInput == ".set" && !DisabledGroup.count(eve.fromGroup)) {
+		int intMsgCnt = strFirstInput.length();
+		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
+		string Command = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+		int intNoUse;
+		if (Command != "" && MainRoll(intNoUse,Command) == 0) {
+			Default[eve.fromQQ] = Command;
+			sendGroupMsg(eve.fromGroup, "成功更改默认骰类型!");
+			eve.message_block();
+			return;
+		}
+		sendGroupMsg(eve.fromGroup, "掷骰表达式错误!");
 		eve.message_block();
 		return;
 	}
@@ -687,51 +825,86 @@ EVE_GroupMsg_EX(groupMsg) {
 		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
 		string Command = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
 		for (auto &kk : Command)kk = tolower(kk);
-		if (Command == "") {
-			auto Range = ObserveGroup.equal_range(eve.fromGroup);
-			for (auto it = Range.first; it != Range.second; ++it) {
-				if (it->second == eve.fromQQ) {
-					sendGroupMsg(eve.fromGroup, strNickName + "已经处于旁观模式!");
-					eve.message_block();
-					return;
-				}
-			}
-			ObserveGroup.insert(make_pair(eve.fromGroup, eve.fromQQ));
-			sendGroupMsg(eve.fromGroup, strNickName + "成功加入旁观模式!");
-		}
-		else if(Command=="exit"){
-			auto Range = ObserveGroup.equal_range(eve.fromGroup);
-			for (auto it = Range.first; it != Range.second; ++it) {
-				if (it->second == eve.fromQQ) {
-					ObserveGroup.erase(it);
-					sendGroupMsg(eve.fromGroup, strNickName + "成功退出旁观模式!");
-					eve.message_block();
-					return;
-				}
-			}
-			sendGroupMsg(eve.fromGroup, strNickName + "没有加入旁观模式!");
-		}
-		else if (Command == "list") {
-			string Msg = "当前的旁观者有:";
-			auto Range = ObserveGroup.equal_range(eve.fromGroup);
-			for (auto it = Range.first; it != Range.second; ++it) {
-				pair<long long, long long> ObGroup;
-				ObGroup.first = it->second;
-				ObGroup.second = eve.fromGroup;
-				Msg += "\n" + (GroupName.count(ObGroup) ? GroupName[ObGroup] : getGroupMemberInfo(eve.fromGroup, it->second).GroupNickname.empty() ? getStrangerInfo(it->second).nick : getGroupMemberInfo(eve.fromGroup, it->second).GroupNickname) + "(" + to_string(it->second) + ")";
-			}
-			sendGroupMsg(eve.fromGroup, Msg == "当前的旁观者有:" ? "当前暂无旁观者" : Msg);
-		}
-		else if (Command == "clr") {
+		if (Command == "on") {
 			if (getGroupMemberInfo(eve.fromGroup, eve.fromQQ).permissions >= 2) {
-				ObserveGroup.erase(eve.fromGroup);
-				sendGroupMsg(eve.fromGroup, "成功删除所有旁观者!");
+				if (DisabledOBGroup.count(eve.fromGroup)) {
+					DisabledOBGroup.erase(eve.fromGroup);
+					sendGroupMsg(eve.fromGroup, "成功在本群中启用旁观模式!");
+				}
+				else {
+					sendGroupMsg(eve.fromGroup, "在本群中旁观模式没有被禁用!");
+				}
 			}
 			else {
 				sendGroupMsg(eve.fromGroup, "你没有权限执行此命令!");
 			}
 		}
-		else sendGroupMsg(eve.fromGroup, "无法识别的命令!");
+		else if (Command == "off") {
+			if (getGroupMemberInfo(eve.fromGroup, eve.fromQQ).permissions >= 2) {
+				if (!DisabledOBGroup.count(eve.fromGroup)) {
+					DisabledOBGroup.insert(eve.fromGroup);
+					ObserveGroup.clear();
+					sendGroupMsg(eve.fromGroup, "成功在本群中禁用旁观模式!");
+				}
+				else {
+					sendGroupMsg(eve.fromGroup, "在本群中旁观模式没有被启用!");
+				}
+			}
+			else {
+				sendGroupMsg(eve.fromGroup, "你没有权限执行此命令!");
+			}
+
+		}
+		else if (!DisabledOBGroup.count(eve.fromGroup)) {
+			if (Command == "") {
+				auto Range = ObserveGroup.equal_range(eve.fromGroup);
+				for (auto it = Range.first; it != Range.second; ++it) {
+					if (it->second == eve.fromQQ) {
+						sendGroupMsg(eve.fromGroup, strNickName + "已经处于旁观模式!");
+						eve.message_block();
+						return;
+					}
+				}
+				ObserveGroup.insert(make_pair(eve.fromGroup, eve.fromQQ));
+				sendGroupMsg(eve.fromGroup, strNickName + "成功加入旁观模式!");
+			}
+			else if (Command == "exit") {
+				auto Range = ObserveGroup.equal_range(eve.fromGroup);
+				for (auto it = Range.first; it != Range.second; ++it) {
+					if (it->second == eve.fromQQ) {
+						ObserveGroup.erase(it);
+						sendGroupMsg(eve.fromGroup, strNickName + "成功退出旁观模式!");
+						eve.message_block();
+						return;
+					}
+				}
+				sendGroupMsg(eve.fromGroup, strNickName + "没有加入旁观模式!");
+			}
+			else if (Command == "list") {
+				string Msg = "当前的旁观者有:";
+				auto Range = ObserveGroup.equal_range(eve.fromGroup);
+				for (auto it = Range.first; it != Range.second; ++it) {
+					pair<long long, long long> ObGroup;
+					ObGroup.first = it->second;
+					ObGroup.second = eve.fromGroup;
+					Msg += "\n" + (GroupName.count(ObGroup) ? GroupName[ObGroup] : getGroupMemberInfo(eve.fromGroup, it->second).GroupNickname.empty() ? getStrangerInfo(it->second).nick : getGroupMemberInfo(eve.fromGroup, it->second).GroupNickname) + "(" + to_string(it->second) + ")";
+				}
+				sendGroupMsg(eve.fromGroup, Msg == "当前的旁观者有:" ? "当前暂无旁观者" : Msg);
+			}
+			else if (Command == "clr") {
+				if (getGroupMemberInfo(eve.fromGroup, eve.fromQQ).permissions >= 2) {
+					ObserveGroup.erase(eve.fromGroup);
+					sendGroupMsg(eve.fromGroup, "成功删除所有旁观者!");
+				}
+				else {
+					sendGroupMsg(eve.fromGroup, "你没有权限执行此命令!");
+				}
+			}
+			else sendGroupMsg(eve.fromGroup, "无法识别的命令!");
+		}
+		else {
+			sendGroupMsg(eve.fromGroup, "在本群中旁观模式已被禁用!");
+		}
 		eve.message_block();
 		return;
 	}
@@ -782,7 +955,8 @@ EVE_GroupMsg_EX(groupMsg) {
 				JRRP[eve.fromQQ].RPVal = rdD100;
 				sendGroupMsg(eve.fromGroup, strNickName + "今天的人品值是:" + to_string(JRRP[eve.fromQQ].RPVal));
 			}
-		}	
+		}
+		else sendGroupMsg(eve.fromGroup, "在本群中JRRP已被禁用!");
 		eve.message_block();
 		return;
 	}
@@ -800,10 +974,10 @@ EVE_GroupMsg_EX(groupMsg) {
 			if (getGroupMemberInfo(eve.fromGroup, eve.fromQQ).permissions >= 2) {
 				if (DisabledMEGroup.count(eve.fromGroup)) {
 					DisabledMEGroup.erase(eve.fromGroup);
-					sendGroupMsg(eve.fromGroup, "成功在本群中启用ME!");
+					sendGroupMsg(eve.fromGroup, "成功在本群中启用.me命令!");
 				}
 				else {
-					sendGroupMsg(eve.fromGroup, "在本群中ME没有被禁用!");
+					sendGroupMsg(eve.fromGroup, "在本群中.me命令没有被禁用!");
 				}
 			}
 			else sendGroupMsg(eve.fromGroup, "您没有权限执行此命令!");
@@ -812,10 +986,10 @@ EVE_GroupMsg_EX(groupMsg) {
 			if (getGroupMemberInfo(eve.fromGroup, eve.fromQQ).permissions >= 2) {
 				if (!DisabledMEGroup.count(eve.fromGroup)) {
 					DisabledMEGroup.insert(eve.fromGroup);
-					sendGroupMsg(eve.fromGroup, "成功在本群中禁用ME!");
+					sendGroupMsg(eve.fromGroup, "成功在本群中禁用.me命令!");
 				}
 				else {
-					sendGroupMsg(eve.fromGroup, "在本群中ME没有被启用!");
+					sendGroupMsg(eve.fromGroup, "在本群中.me命令没有被启用!");
 				}
 			}
 			else sendGroupMsg(eve.fromGroup, "您没有权限执行此命令!");
@@ -825,6 +999,9 @@ EVE_GroupMsg_EX(groupMsg) {
 		}
 		else if (!DisabledMEGroup.count(eve.fromGroup)) {
 			sendGroupMsg(eve.fromGroup, "动作不能为空!");
+		}
+		else {
+			sendGroupMsg(eve.fromGroup, "在本群中.me命令已被禁用!");
 		}
 		eve.message_block();
 		return;
@@ -870,6 +1047,11 @@ EVE_GroupMsg_EX(groupMsg) {
 				eve.message_block();
 				return;
 			}
+			else if (Rollres == -2) {
+				sendGroupMsg(eve.fromGroup, ImagePack());
+				eve.message_block();
+				return;
+			}
 			if(SanCost.substr(0, SanCost.find("/")).find("d") != string::npos|| SanCost.substr(0, SanCost.find("/")).find("D") != string::npos)strAns += "=" + to_string(intReduceSan);
 			strAns += +"点,当前剩余" + to_string(intSan - intReduceSan) + "点";
 		}
@@ -881,6 +1063,9 @@ EVE_GroupMsg_EX(groupMsg) {
 				sendGroupMsg(eve.fromGroup, strErrMsg);
 				eve.message_block();
 				return;
+			}
+			else if (Rollres == -2) {
+				sendGroupMsg(eve.fromGroup, ImagePack());
 			}
 			if (SanCost.substr(SanCost.find("/") + 1).find("d") != string::npos || SanCost.substr(SanCost.find("/") + 1).find("D") != string::npos)strAns += "=" + to_string(intReduceSan);
 			strAns += +"点,当前剩余" + to_string(intSan - intReduceSan) + "点";
@@ -956,19 +1141,26 @@ EVE_PrivateMsg_EX(privateMsg)
 		string strReason;
 
 		//Get the Second Input
-		strSecondInput += eve.message.substr(intMsgCnt, eve.message.find(" ", intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(" ", intMsgCnt) - intMsgCnt);
+		string strTmp = eve.message.substr(intMsgCnt, eve.message.find(" ", intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(" ", intMsgCnt) - intMsgCnt);
+		if (strSecondInput != "")strReason += strTmp; else strSecondInput += strTmp;
 		string strSecondInputCopy = strSecondInput;
 		//Toupper the second input
 		for (auto &i : strSecondInput)if (islower(i))i = toupper(i);
 
 		//Make the intMsgCnt jump to the space after the second input
 		intMsgCnt = eve.message.find(" ", intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(" ", intMsgCnt);
-
+		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
 		//Save the number or dice before # to get the time of rolling dice
 		int intRollDiceTime = 0;
 		if (strSecondInput.find("#") != string::npos) {
-			if (MainRoll(intRollDiceTime, strSecondInput.substr(0, strSecondInput.find("#"))) == -1 || intRollDiceTime <= 0) {
+			int intTmpRDRes = MainRoll(intRollDiceTime, strSecondInput.substr(0, strSecondInput.find("#")));
+			if (intTmpRDRes == -1 || intRollDiceTime <= 0) {
 				sendPrivateMsg(eve.fromQQ, strErrMsg);
+				eve.message_block();
+				return;
+			}
+			else if (intTmpRDRes == -2) {
+				sendPrivateMsg(eve.fromQQ, ImagePack());
 				eve.message_block();
 				return;
 			}
@@ -1033,12 +1225,27 @@ EVE_PrivateMsg_EX(privateMsg)
 			}
 			else if (strSecondInput == "DND" || strSecondInput == "英雄作成" || strSecondInput == "英雄做成" || strSecondInput == "英雄制作") {
 				//DND
+				string strNum = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+				for (const auto i : strNum)
+					if (!isdigit(i)) {
+						sendPrivateMsg(eve.fromQQ, "人物作成次数输入不正确!");
+						eve.message_block();
+						return;
+					}
+				int intNum = 0;
+				intNum = Str2Int(strNum);
+				if (strNum == "")intNum = 1;
+				if (intNum > 10 || intNum <= 0) {
+					sendPrivateMsg(eve.fromQQ, "人物作成次数超过了最大限制10次!");
+					eve.message_block();
+					return;
+				}
 
 				//Save the result of DND
-				string strMAns = strNickName + "的英雄做成:\n";
+				string strMAns = strNickName + "的英雄做成:";
 
 				//Call the DND roll dice function
-				DND(strMAns);
+				DND(strMAns,intNum);
 
 
 				sendPrivateMsg(eve.fromQQ, strMAns);
@@ -1076,7 +1283,7 @@ EVE_PrivateMsg_EX(privateMsg)
 				if (intMsgCnt != eve.message.length() && w == 0)strReason = eve.message.substr(intMsgCnt);
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "由于" + strReason + strAns;
+					strAns = "由于" + strReason + " " + strAns;
 				}
 				sendPrivateMsg(eve.fromQQ, strAns);
 			}
@@ -1112,15 +1319,63 @@ EVE_PrivateMsg_EX(privateMsg)
 				if (intMsgCnt != eve.message.length() && w == 0)strReason = eve.message.substr(intMsgCnt);
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "由于" + strReason + strAns;
+					strAns = "由于" + strReason + " " + strAns;
 				}
 				sendPrivateMsg(eve.fromQQ, strAns);
+			}
+			else if (strSecondInput == "COC7S") {
+				string strNum = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+				for (const auto i : strNum)
+					if (!isdigit(i)) {
+						sendPrivateMsg(eve.fromQQ, "人物作成次数输入不正确!");
+						eve.message_block();
+						return;
+					}
+				int intNum = 0;
+				intNum = Str2Int(strNum);
+				if (strNum == "")intNum = 1;
+				if (intNum > 10 || intNum <= 0) {
+					sendPrivateMsg(eve.fromQQ, "人物作成次数超过了最大限制10次!");
+					eve.message_block();
+					return;
+				}
+				string strMAns = strNickName;
+
+				//Call the COC7 roll dice function
+				COC7S(strMAns, intNum);
+
+				//If is hidden, send a private msg instead of a group one
+				sendPrivateMsg(eve.fromQQ, strMAns);
+			}
+			else if (strSecondInput == "COC6S") {
+				string strNum = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+				for (const auto i : strNum)
+					if (!isdigit(i)) {
+						sendPrivateMsg(eve.fromQQ, "人物作成次数输入不正确!");
+						eve.message_block();
+						return;
+					}
+				int intNum = 0;
+				intNum = Str2Int(strNum);
+				if (strNum == "")intNum = 1;
+				if (intNum > 10 || intNum <= 0) {
+					sendPrivateMsg(eve.fromQQ, "人物作成次数超过了最大限制10次!");
+					eve.message_block();
+					return;
+				}
+				string strMAns = strNickName;
+
+				//Call the COC7 roll dice function
+				COC6S(strMAns, intNum);
+
+				//If is hidden, send a private msg instead of a group one
+				sendPrivateMsg(eve.fromQQ, strMAns);
 			}
 			else {
 
 				for (int k = 0; k != strSecondInput.length(); k++) {
 					if (!isprint(strSecondInput[k]) || (!isdigit(strSecondInput[k]) && strSecondInput[k] != '-'&&strSecondInput[k] != '+' && strSecondInput[k] != 'D') || (strSecondInput[k] == 'D' && !isdigit(strSecondInput[k + 1]))) {
-						strReason += strSecondInputCopy.substr(k);
+						strReason = strSecondInputCopy.substr(k) + strReason;
 						strSecondInput = strSecondInput.substr(0, k);
 						strSecondInputCopy = strSecondInput.substr(0, k);
 						break;
@@ -1133,7 +1388,7 @@ EVE_PrivateMsg_EX(privateMsg)
 				}
 
 				//Default Dice
-				if (strSecondInput == "")strSecondInput = "D100";
+				if (strSecondInput == "")strSecondInput = Default.count(eve.fromQQ) ? Default[eve.fromQQ] : "D100";
 
 				//Output string, save the main answer
 				string strAns = strNickName + "骰出了: " + strSecondInput + "=";
@@ -1153,6 +1408,11 @@ EVE_PrivateMsg_EX(privateMsg)
 					eve.message_block();
 					return;
 				}
+				else if(intRollRes == -2) {
+					sendPrivateMsg(eve.fromQQ, ImagePack());
+					eve.message_block();
+					return;
+				}
 
 				//Skip the space
 				while (eve.message[intMsgCnt] == ' '&&intMsgCnt != eve.message.length())intMsgCnt++;
@@ -1164,7 +1424,7 @@ EVE_PrivateMsg_EX(privateMsg)
 
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "由于" + strReason + strAns;
+					strAns = "由于" + strReason + " " + strAns;
 				}
 
 				//Avoid Repeat Result
@@ -1186,6 +1446,21 @@ EVE_PrivateMsg_EX(privateMsg)
 			//Avoid being frozen
 			Sleep(50);
 		}
+		eve.message_block();
+		return;
+	}
+	else if (strFirstInput == ".set") {
+		int intMsgCnt = strFirstInput.length();
+		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
+		string Command = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+		int intNoUse;
+		if (Command != "" && MainRoll(intNoUse, Command) == 0) {
+			Default[eve.fromQQ] = Command;
+			sendPrivateMsg(eve.fromQQ, "成功更改默认骰类型!");
+			eve.message_block();
+			return;
+		}
+		sendPrivateMsg(eve.fromQQ, "掷骰表达式错误!");
 		eve.message_block();
 		return;
 	}
@@ -1330,6 +1605,11 @@ EVE_PrivateMsg_EX(privateMsg)
 				eve.message_block();
 				return;
 			}
+			else if (Rollres == -2) {
+				sendPrivateMsg(eve.fromQQ, ImagePack());
+				eve.message_block();
+				return;
+			}
 			if (SanCost.substr(0, SanCost.find("/")).find("d") != string::npos || SanCost.substr(0, SanCost.find("/")).find("D") != string::npos)strAns += "=" + to_string(intReduceSan);
 			strAns += +"点,当前剩余" + to_string(intSan - intReduceSan) + "点";
 		}
@@ -1342,6 +1622,9 @@ EVE_PrivateMsg_EX(privateMsg)
 				eve.message_block();
 				return;
 			}
+			else if (Rollres == -2) {
+				sendPrivateMsg(eve.fromQQ, ImagePack());
+			}
 			if (SanCost.substr(SanCost.find("/") + 1).find("d") != string::npos || SanCost.substr(SanCost.find("/") + 1).find("D") != string::npos)strAns += "=" + to_string(intReduceSan);
 			strAns += +"点,当前剩余" + to_string(intSan - intReduceSan) + "点";
 		}
@@ -1349,7 +1632,6 @@ EVE_PrivateMsg_EX(privateMsg)
 		eve.message_block();
 		return;
 	}
-
 	if(eve.message[0]=='.')sendPrivateMsg(eve.fromQQ, "命令输入错误!");
 	eve.message_ignore();
 	return;
@@ -1426,7 +1708,9 @@ EVE_DiscussMsg_EX(discussMsg) {
 		string strReason;
 
 		//Get the Second Input
-		strSecondInput += eve.message.substr(intMsgCnt, eve.message.find(" ", intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(" ", intMsgCnt) - intMsgCnt);
+		string strTmp = eve.message.substr(intMsgCnt, eve.message.find(" ", intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(" ", intMsgCnt) - intMsgCnt);
+		if (strSecondInput!="")strReason += strTmp; else strSecondInput += strTmp;
+		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
 		string strSecondInputCopy = strSecondInput;
 		//Toupper the second input
 		for (auto &i : strSecondInput)if (islower(i))i = toupper(i);
@@ -1441,8 +1725,14 @@ EVE_DiscussMsg_EX(discussMsg) {
 		//Save the number or dice before # to get the time of rolling dice
 		int intRollDiceTime = 0;
 		if (strSecondInput.find("#") != string::npos) {
-			if (MainRoll(intRollDiceTime, strSecondInput.substr(0, strSecondInput.find("#"))) == -1 || intRollDiceTime <= 0) {
+			int intTmpRDRes = MainRoll(intRollDiceTime, strSecondInput.substr(0, strSecondInput.find("#")));
+			if (intTmpRDRes == -1 || intRollDiceTime <= 0) {
 				sendDiscussMsg(eve.fromDiscuss, strErrMsg);
+				eve.message_block();
+				return;
+			}
+			else if (intTmpRDRes == -2) {
+				sendDiscussMsg(eve.fromDiscuss, ImagePack());
 				eve.message_block();
 				return;
 			}
@@ -1536,11 +1826,27 @@ EVE_DiscussMsg_EX(discussMsg) {
 			else if (strSecondInput == "DND" || strSecondInput == "英雄作成" || strSecondInput == "英雄做成" || strSecondInput == "英雄制作") {
 				//DND
 
+				string strNum = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+				for (const auto i : strNum)
+					if (!isdigit(i)) {
+						sendDiscussMsg(eve.fromDiscuss, "人物作成次数输入不正确!");
+						eve.message_block();
+						return;
+					}
+				int intNum = 0;
+				intNum = Str2Int(strNum);
+				if (strNum == "")intNum = 1;
+				if (intNum > 10 || intNum <= 0) {
+					sendDiscussMsg(eve.fromDiscuss, "人物作成次数超过了最大限制10次!");
+					eve.message_block();
+					return;
+				}
+
 				//Save the result of DND
-				string strMAns = strNickName + "的英雄做成:\n";
+				string strMAns = strNickName + "的英雄做成:";
 
 				//Call the DND roll dice function
-				DND(strMAns);
+				DND(strMAns,intNum);
 
 				//If is hidden, send a private msg instead of a Discuss one
 				if (isHidden) {
@@ -1586,7 +1892,7 @@ EVE_DiscussMsg_EX(discussMsg) {
 				if (intMsgCnt != eve.message.length() && w == 0)strReason = eve.message.substr(intMsgCnt);
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "由于" + strReason + strAns;
+					strAns = "由于" + strReason + " " + strAns;
 				}
 				if (isHidden) {
 					strAns = "在多人聊天" + strDiscussName + "中" + strAns;
@@ -1632,7 +1938,7 @@ EVE_DiscussMsg_EX(discussMsg) {
 				if (intMsgCnt != eve.message.length() && w == 0)strReason = eve.message.substr(intMsgCnt);
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "由于" + strReason + strAns;
+					strAns = "由于" + strReason + " " + strAns;
 				}
 				if (isHidden) {
 					strAns = "在多人聊天" + strDiscussName + "中" + strAns;
@@ -1645,11 +1951,77 @@ EVE_DiscussMsg_EX(discussMsg) {
 				else
 					sendDiscussMsg(eve.fromDiscuss, strAns);
 			}
+			else if (strSecondInput == "COC7S") {
+				string strNum = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+				for (const auto i : strNum)
+					if (!isdigit(i)) {
+						sendDiscussMsg(eve.fromDiscuss, "人物作成次数输入不正确!");
+						eve.message_block();
+						return;
+					}
+				int intNum = 0;
+				intNum = Str2Int(strNum);
+				if (strNum == "")intNum = 1;
+				if (intNum > 10 || intNum <= 0) {
+					sendDiscussMsg(eve.fromDiscuss, "人物作成次数超过了最大限制10次!");
+					eve.message_block();
+					return;
+				}
+				string strMAns = strNickName;
+
+				//Call the COC7 roll dice function
+				COC7S(strMAns, intNum);
+
+				//If is hidden, send a private msg instead of a group one
+				if (isHidden) {
+					strMAns = "在多人聊天" + to_string(eve.fromDiscuss) + "中" + strMAns;
+					sendPrivateMsg(eve.fromQQ, strMAns);
+					auto Range = ObserveDiscuss.equal_range(eve.fromDiscuss);
+					for (auto it = Range.first; it != Range.second; ++it) {
+						if (it->second != eve.fromQQ)sendPrivateMsg(it->second, strMAns);
+					}
+				}
+				else
+					sendDiscussMsg(eve.fromDiscuss, strMAns);
+			}
+			else if (strSecondInput == "COC6S") {
+				string strNum = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+				for (const auto i : strNum)
+					if (!isdigit(i)) {
+						sendDiscussMsg(eve.fromDiscuss, "人物作成次数输入不正确!");
+						eve.message_block();
+						return;
+					}
+				int intNum = 0;
+				intNum = Str2Int(strNum);
+				if (strNum == "")intNum = 1;
+				if (intNum > 10 || intNum <= 0) {
+					sendDiscussMsg(eve.fromDiscuss, "人物作成次数超过了最大限制10次!");
+					eve.message_block();
+					return;
+				}
+				string strMAns = strNickName;
+
+				//Call the COC7 roll dice function
+				COC6S(strMAns, intNum);
+
+				//If is hidden, send a private msg instead of a group one
+				if (isHidden) {
+					strMAns = "在多人聊天" + to_string(eve.fromDiscuss) + "中" + strMAns;
+					sendPrivateMsg(eve.fromQQ, strMAns);
+					auto Range = ObserveDiscuss.equal_range(eve.fromDiscuss);
+					for (auto it = Range.first; it != Range.second; ++it) {
+						if (it->second != eve.fromQQ)sendPrivateMsg(it->second, strMAns);
+					}
+				}
+				else
+					sendDiscussMsg(eve.fromDiscuss, strMAns);
+			}
 			else {
 
 				for (int k = 0; k != strSecondInput.length(); k++) {
 					if (!isprint(strSecondInput[k]) || (!isdigit(strSecondInput[k]) && strSecondInput[k] != '-'&&strSecondInput[k] != '+' && strSecondInput[k] != 'D') || (strSecondInput[k] == 'D' && !isdigit(strSecondInput[k + 1]))) {
-						strReason += strSecondInputCopy.substr(k);
+						strReason = strSecondInputCopy.substr(k) + strReason;
 						strSecondInput = strSecondInput.substr(0, k);
 						strSecondInputCopy = strSecondInput.substr(0, k);
 						break;
@@ -1662,7 +2034,7 @@ EVE_DiscussMsg_EX(discussMsg) {
 				}
 
 				//Default Dice
-				if (strSecondInput == "")strSecondInput = "D100";
+				if (strSecondInput == "")strSecondInput = Default.count(eve.fromQQ) ? Default[eve.fromQQ] : "D100";
 
 				//Output string, save the main answer
 				string strAns = strNickName + "骰出了: " + strSecondInput + "=";
@@ -1682,6 +2054,11 @@ EVE_DiscussMsg_EX(discussMsg) {
 					eve.message_block();
 					return;
 				}
+				else if (intRollRes == -2) {
+					sendDiscussMsg(eve.fromDiscuss, ImagePack());
+					eve.message_block();
+					return;
+				}
 
 				//Skip the space
 				while (eve.message[intMsgCnt] == ' '&&intMsgCnt != eve.message.length())intMsgCnt++;
@@ -1693,7 +2070,7 @@ EVE_DiscussMsg_EX(discussMsg) {
 
 				//If the reason is available, add the reason in the front of the output
 				if (!strReason.empty()) {
-					strAns = "由于" + strReason + strAns;
+					strAns = "由于" + strReason + " " + strAns;
 				}
 
 				//Avoid Repeat Result
@@ -1848,6 +2225,7 @@ else if (strFirstInput == ".jrrp" && !DisabledDiscuss.count(eve.fromDiscuss)) {
 			sendDiscussMsg(eve.fromDiscuss, strNickName + "今天的人品值是:" + to_string(JRRP[eve.fromQQ].RPVal));
 		}
 	}
+	else sendDiscussMsg(eve.fromDiscuss, "在本多人聊天中JRRP已被禁用!");
 	eve.message_block();
 	return;
 }
@@ -1888,51 +2266,88 @@ else if (strFirstInput == ".jrrp" && !DisabledDiscuss.count(eve.fromDiscuss)) {
 		eve.message_block();
 		return;
 	}
+	else if (strFirstInput == ".set" && !DisabledDiscuss.count(eve.fromDiscuss)) {
+		int intMsgCnt = strFirstInput.length();
+		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
+		string Command = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
+		int intNoUse;
+		if (Command != "" && MainRoll(intNoUse, Command) == 0) {
+			Default[eve.fromQQ] = Command;
+			sendDiscussMsg(eve.fromDiscuss, "成功更改默认骰类型!");
+			eve.message_block();
+			return;
+		}
+		sendDiscussMsg(eve.fromDiscuss, "掷骰表达式错误!");
+		eve.message_block();
+		return;
+	}
 	else if (strFirstInput == ".ob" && !DisabledDiscuss.count(eve.fromDiscuss)) {
 		int intMsgCnt = strFirstInput.length();
 		while (eve.message[intMsgCnt] == ' ')intMsgCnt++;
 		string Command = eve.message.substr(intMsgCnt, eve.message.find(' ', intMsgCnt) == string::npos ? eve.message.length() : eve.message.find(' ', intMsgCnt) - intMsgCnt);
 		for (auto &kk : Command)kk = tolower(kk);
-		if (Command == "") {
-			auto Range = ObserveDiscuss.equal_range(eve.fromDiscuss);
-			for (auto it = Range.first; it != Range.second; ++it) {
-				if (it->second == eve.fromQQ) {
-					sendDiscussMsg(eve.fromDiscuss, strNickName + "已经处于旁观模式!");
-					eve.message_block();
-					return;
+		if (Command == "on") {
+			if (DisabledOBDiscuss.count(eve.fromDiscuss)) {
+				DisabledOBDiscuss.erase(eve.fromDiscuss);
+				sendDiscussMsg(eve.fromDiscuss, "成功在本群中启用旁观模式!");
+			}
+			else {
+				sendDiscussMsg(eve.fromDiscuss, "在本群中旁观模式没有被禁用!");
+			}
+		}
+		else if (Command == "off") {
+			if (!DisabledOBDiscuss.count(eve.fromDiscuss)) {
+				DisabledOBDiscuss.insert(eve.fromDiscuss);
+				ObserveDiscuss.clear();
+				sendDiscussMsg(eve.fromDiscuss, "成功在本群中禁用旁观模式!");
+			}
+			else {
+				sendDiscussMsg(eve.fromDiscuss, "在本群中旁观模式没有被启用!");
+			}
+		}
+		else if (!DisabledOBDiscuss.count(eve.fromDiscuss)) {
+			if (Command == "") {
+				auto Range = ObserveDiscuss.equal_range(eve.fromDiscuss);
+				for (auto it = Range.first; it != Range.second; ++it) {
+					if (it->second == eve.fromQQ) {
+						sendDiscussMsg(eve.fromDiscuss, strNickName + "已经处于旁观模式!");
+						eve.message_block();
+						return;
+					}
 				}
+				ObserveDiscuss.insert(make_pair(eve.fromDiscuss, eve.fromQQ));
+				sendDiscussMsg(eve.fromDiscuss, strNickName + "成功加入旁观模式!");
 			}
-			ObserveDiscuss.insert(make_pair(eve.fromDiscuss, eve.fromQQ));
-			sendDiscussMsg(eve.fromDiscuss, strNickName + "成功加入旁观模式!");
-		}
-		else if (Command == "exit") {
-			auto Range = ObserveDiscuss.equal_range(eve.fromDiscuss);
-			for (auto it = Range.first; it != Range.second; ++it) {
-				if (it->second == eve.fromQQ) {
-					ObserveDiscuss.erase(it);
-					sendDiscussMsg(eve.fromDiscuss, strNickName + "成功退出旁观模式!");
-					eve.message_block();
-					return;
+			else if (Command == "exit") {
+				auto Range = ObserveDiscuss.equal_range(eve.fromDiscuss);
+				for (auto it = Range.first; it != Range.second; ++it) {
+					if (it->second == eve.fromQQ) {
+						ObserveDiscuss.erase(it);
+						sendDiscussMsg(eve.fromDiscuss, strNickName + "成功退出旁观模式!");
+						eve.message_block();
+						return;
+					}
 				}
+				sendDiscussMsg(eve.fromDiscuss, strNickName + "没有加入旁观模式!");
 			}
-			sendDiscussMsg(eve.fromDiscuss, strNickName + "没有加入旁观模式!");
-		}
-		else if (Command == "list") {
-			string Msg = "当前的旁观者有:";
-			auto Range = ObserveDiscuss.equal_range(eve.fromDiscuss);
-			for (auto it = Range.first; it != Range.second; ++it) {
-				pair<long long, long long> ObDiscuss;
-				ObDiscuss.first = it->second;
-				ObDiscuss.second = eve.fromDiscuss;
-				Msg += "\n" + (DiscussName.count(ObDiscuss) ? DiscussName[ObDiscuss] : getStrangerInfo(it->second).nick) + "(" + to_string(it->second) + ")";
+			else if (Command == "list") {
+				string Msg = "当前的旁观者有:";
+				auto Range = ObserveDiscuss.equal_range(eve.fromDiscuss);
+				for (auto it = Range.first; it != Range.second; ++it) {
+					pair<long long, long long> ObDiscuss;
+					ObDiscuss.first = it->second;
+					ObDiscuss.second = eve.fromDiscuss;
+					Msg += "\n" + (DiscussName.count(ObDiscuss) ? DiscussName[ObDiscuss] : getStrangerInfo(it->second).nick) + "(" + to_string(it->second) + ")";
+				}
+				sendDiscussMsg(eve.fromDiscuss, Msg == "当前的旁观者有:" ? "当前暂无旁观者" : Msg);
 			}
-			sendDiscussMsg(eve.fromDiscuss, Msg == "当前的旁观者有:" ? "当前暂无旁观者" : Msg);
+			else if (Command == "clr") {
+				ObserveDiscuss.erase(eve.fromDiscuss);
+				sendDiscussMsg(eve.fromDiscuss, "成功删除所有旁观者!");
+			}
+			else sendDiscussMsg(eve.fromDiscuss, "无法识别的命令!");
 		}
-		else if (Command == "clr") {
-			ObserveDiscuss.erase(eve.fromDiscuss);
-			sendDiscussMsg(eve.fromDiscuss, "成功删除所有旁观者!");
-		}
-		else sendDiscussMsg(eve.fromDiscuss, "无法识别的命令!");
+		else sendDiscussMsg(eve.fromDiscuss, "在本多人聊天中旁观模式已被禁用!");
 		eve.message_block();
 		return;
 	}
@@ -1949,19 +2364,19 @@ else if (strFirstInput == ".jrrp" && !DisabledDiscuss.count(eve.fromDiscuss)) {
 		if (Command == "on") {
 			if (DisabledMEDiscuss.count(eve.fromDiscuss)) {
 				DisabledMEDiscuss.erase(eve.fromDiscuss);
-				sendDiscussMsg(eve.fromDiscuss, "成功在本群中启用ME!");
+				sendDiscussMsg(eve.fromDiscuss, "成功在本群中启用.me命令!");
 			}
 			else {
-				sendDiscussMsg(eve.fromDiscuss, "在本群中ME没有被禁用!");
+				sendDiscussMsg(eve.fromDiscuss, "在本群中.me命令没有被禁用!");
 			}
 		}
 		else if (Command == "off") {
 			if (!DisabledMEDiscuss.count(eve.fromDiscuss)) {
 				DisabledMEDiscuss.insert(eve.fromDiscuss);
-				sendDiscussMsg(eve.fromDiscuss, "成功在本群中禁用ME!");
+				sendDiscussMsg(eve.fromDiscuss, "成功在本群中禁用.me命令!");
 			}
 			else {
-				sendDiscussMsg(eve.fromDiscuss, "在本群中ME没有被启用!");
+				sendDiscussMsg(eve.fromDiscuss, "在本群中.me命令没有被启用!");
 			}
 		}
 		else if (Command != "" && !DisabledMEDiscuss.count(eve.fromDiscuss)) {
@@ -1970,6 +2385,7 @@ else if (strFirstInput == ".jrrp" && !DisabledDiscuss.count(eve.fromDiscuss)) {
 		else if (!DisabledMEDiscuss.count(eve.fromDiscuss)) {
 			sendDiscussMsg(eve.fromDiscuss, "动作不能为空!");
 		}
+		else sendDiscussMsg(eve.fromDiscuss, "在本多人聊天中.me命令已被禁用!");
 		eve.message_block();
 		return;
 	}
@@ -2014,6 +2430,11 @@ else if (strFirstInput == ".jrrp" && !DisabledDiscuss.count(eve.fromDiscuss)) {
 				eve.message_block();
 				return;
 			}
+			else if (Rollres == -2) {
+				sendDiscussMsg(eve.fromDiscuss, ImagePack());
+				eve.message_block();
+				return;
+			}
 			if (SanCost.substr(0, SanCost.find("/")).find("d") != string::npos || SanCost.substr(0, SanCost.find("/")).find("D") != string::npos)strAns += "=" + to_string(intReduceSan);
 			strAns += +"点,当前剩余" + to_string(intSan - intReduceSan) + "点";
 		}
@@ -2023,6 +2444,11 @@ else if (strFirstInput == ".jrrp" && !DisabledDiscuss.count(eve.fromDiscuss)) {
 			int Rollres = MainRoll(intReduceSan, SanCost.substr(SanCost.find("/")+1));
 			if (Rollres == -1) {
 				sendDiscussMsg(eve.fromDiscuss, strErrMsg);
+				eve.message_block();
+				return;
+			}
+			else if (Rollres == -2) {
+				sendDiscussMsg(eve.fromDiscuss, ImagePack());
 				eve.message_block();
 				return;
 			}
@@ -2093,6 +2519,18 @@ EVE_Exit(eventexit) {
 	}
 	ofstreamDisabledMEDiscuss.close();
 
+	ofstream ofstreamDisabledOBGroup(strFileLoc + "DisabledOBGroup.config", ios::in | ios::trunc);
+	for (auto it = DisabledOBGroup.begin(); it != DisabledOBGroup.end(); it++) {
+		ofstreamDisabledOBGroup << *it << endl;
+	}
+	ofstreamDisabledOBGroup.close();
+
+	ofstream ofstreamDisabledOBDiscuss(strFileLoc + "DisabledOBDiscuss.config", ios::in | ios::trunc);
+	for (auto it = DisabledOBDiscuss.begin(); it != DisabledOBDiscuss.end(); it++) {
+		ofstreamDisabledOBDiscuss << *it << endl;
+	}
+	ofstreamDisabledOBDiscuss.close();
+
 	ofstream ofstreamObserveGroup(strFileLoc + "ObserveGroup.config", ios::in | ios::trunc);
 	for (auto it = ObserveGroup.begin(); it != ObserveGroup.end(); it++) {
 		ofstreamObserveGroup << it->first << " " << it->second << endl;
@@ -2109,6 +2547,12 @@ EVE_Exit(eventexit) {
 		ofstreamJRRP << it->first << " " << it->second.Date << " " << it->second.RPVal << endl;
 	}
 	ofstreamJRRP.close();
+
+	ofstream ofstreamDefault(strFileLoc + "Default.config", ios::in | ios::trunc);
+	for (auto it = Default.begin(); it != Default.end(); it++) {
+		ofstreamDefault << it->first << " " << it->second << endl;
+	}
+	ofstreamDefault.close();
 	return 0;
 }
 
